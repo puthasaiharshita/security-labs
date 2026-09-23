@@ -6,7 +6,7 @@ I wanted to stop just reading about how enterprise networks handle logins and ac
 
 On the DC I installed Active Directory Domain Services, promoted it, and created a domain called `corp.local`. Then I built out three OUs - Sales, IT, HR - and in each one added a test user and a matching security group.
 
-![OU structure](screenshots/New%20OU%20creation.png)
+![OU structure](screenshots/New-OU-creation.png)
 ![Sales user and group](screenshots/User_Group_creation-1.png)
 ![IT user and group](screenshots/User_Group_creation-2.png)
 ![HR user and group](screenshots/User_Group_creation-3.png)
