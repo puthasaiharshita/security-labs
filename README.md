@@ -1,29 +1,29 @@
 # Security Portfolio — Putha Sai Harshita
-Aspiring AppSec / VAPT professional | Cybersecurity fresher, 2026
+**Aspiring SOC Analyst** | Building hands-on blue-team labs (Active Directory, Windows Event Logging, detection fundamentals) | Red-team background from PortSwigger Web Security Academy (48 labs solved across SQL Injection, XSS, and Authentication)
 🔗 [LinkedIn](https://www.linkedin.com/in/harshita-sai-putha-44144625b/)
-PortSwigger Web Security Academy progress: 43 labs solved across SQL Injection, XSS, and Authentication (Practitioner-level in progress; several labs pending Burp Suite Pro)
 
 ## About
 
-I'm building hands-on offensive security skills through the PortSwigger Web Security
-Academy, working through real vulnerability classes with Burp Suite and documenting
-my methodology — not just the "solved" checkbox. This repo is where I keep detailed
-write-ups: what I tested, why, what worked, and how I'd fix it.
+I'm working toward a SOC analyst role, and I believe understanding how attacks actually work makes for sharper detection — so this portfolio has two sides. My blue-team labs (Active Directory setup, Windows Event Logging, failed-logon detection) are where I'm building hands-on defensive and monitoring skills. My red-team background comes from the PortSwigger Web Security Academy, where I worked through 48 real vulnerability classes with Burp Suite, documenting methodology rather than just the "solved" checkbox — the same instinct for asking "how would I catch this happening?" carries directly into SOC work.
 
-**Focus areas:** Web Application Penetration Testing (VAPT), Application Security
-**Secondary:** Cloud Security (AWS), Network Security (Juniper, Aviatrix)
+**Focus areas:** SOC Fundamentals, Detection & Monitoring, Active Directory Security
+**Secondary:** Web Application Penetration Testing (VAPT), Cloud Security (AWS), Network Security (Juniper, Aviatrix)
 
 ## Skills
 
 | Category | Tools / Areas |
 |---|---|
+| SOC / Detection | Windows Event Viewer, Active Directory, Event Log Analysis, Audit Policy Configuration |
 | Web AppSec | Burp Suite (Proxy, Repeater, Intruder), SQLi, XSS |
 | Cloud | AWS |
 | Networking | Juniper Networks, Aviatrix, general networking fundamentals |
 | Automation | RPA |
-| OS | Linux |
+| OS | Linux, Windows Server |
 
 ## Write-ups
+
+### SOC / Detection Labs (1 completed)
+- [Built My First Active Directory SOC Lab](soc-detection-labs/active-directory-soc-lab/README.md)
 
 ### SQL Injection (15 solved)
 - [Retrieving Hidden Data via WHERE Clause Manipulation](sql-injection/01-retrieve-hidden-data.md)
@@ -119,12 +119,14 @@ completion once I have Pro access.
 ## Structure
 
 .
+├── soc-detection-labs/
+│   └── active-directory-soc-lab/
 ├── sql-injection/
 ├── xss/
 ├── authentication/
 ├── assets/screenshots/
 └── resources/
-└── TEMPLATE.md
+    └── TEMPLATE.md
 
 
 Each write-up follows: **Objective → Vulnerability Overview → Methodology → PoC →
