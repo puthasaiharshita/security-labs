@@ -2,7 +2,7 @@
 
 ### What I built
 
-I wanted to stop just reading about how enterprise networks handle logins and actually build one myself, so I set up a small AD lab from scratch on my laptop using VirtualBox. Two VMs: a Windows Server 2022 box acting as the Domain Controller (DC01), and a Windows 11 machine joined to it as a client (Client01). Both sit on their own isolated network so nothing touches my actual home network.
+I wanted to stop just reading about how enterprise networks handle logins and actually build one myself, so I set up a small AD lab from scratch on my laptop using VirtualBox. Two VMs: a Windows Server 2022 box acting as the Domain Controller (DC01), and a Windows 11 machine joined to it as a client (Client01). Both sit on their own isolated network so nothing touches my actual home network. Windows gave the client a default name, DESKTOP-0U2KVQR, which I refer to as Client01 in this write-up.
 
 On the DC I installed Active Directory Domain Services, promoted it, and created a domain called `corp.local`. Then I built out three OUs (Sales, IT and HR) and in each one added a test user and a matching security group.
 
