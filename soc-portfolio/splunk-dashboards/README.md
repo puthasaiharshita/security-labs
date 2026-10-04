@@ -32,6 +32,8 @@ Before writing any grouping logic, I expanded a single 4625 event just to see wh
 
 ![Expanded 4625 event showing both Account Name fields](screenshots/02-event-detail.png)
 
+*A single raw 4625 event, expanded to see every field it actually logs.*
+
 This is where I found the two Account Name values, the real one being `Administrator`, and the source address, `192.168.56.10`, which is DC01.
 
 **Then I grouped the failures by source and target account**
@@ -44,6 +46,8 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 
 ![Failed logons grouped by source and target account](screenshots/03-failed-logons-by-source.png)
 
+*Failures grouped by where they came from and which account they were aimed at.*
+
 This gave me the real picture: **192.168.56.10 made 24 failed attempts against Administrator, and 4 more against a fake account called fakeadmin**, all from the same source. The blank row (5 events with no source or account) are the clock-sync failures from earlier, they never got far enough to even log who was being targeted.
 
 **Then I wanted to see the timing**
@@ -55,6 +59,8 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 
 ![Timeline of failed logon attempts](screenshots/04-failure-timeline.png)
 
+*Two sharp spikes, each packing over a dozen failures into a few minutes.*
+
 The chart makes it obvious these weren't someone typing a password wrong once or twice, there are two sharp spikes, each with over a dozen failures packed into a few minutes. That burst pattern is the actual signature of an automated attack, not a human mistake.
 
 **Next I checked why each one actually failed**
@@ -65,6 +71,8 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 ```
 
 ![Failure reasons breakdown](screenshots/05-failure-reasons.png)
+
+*Why each attempt actually failed, broken down by status code.*
 
 - **24** failed with `0xC000006A`, wrong password for a real account
 - **4** failed with `0xC0000064`, the account doesn't exist at all
@@ -84,6 +92,8 @@ index=wineventlog sourcetype="WinEventLog:Security" (EventCode=4625 OR EventCode
 
 ![No successful logon followed the failed attempts](screenshots/06-success-after-failure.png)
 
+*Checking whether any failed source later managed a successful logon.*
+
 No results. As far as the logs show, DC01 never actually got into the Administrator account on Client01, it just kept failing.
 
 **Last, I checked if any account got locked out**
@@ -94,6 +104,8 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4740
 ```
 
 ![No lockout events found](screenshots/07-lockouts.png)
+
+*Checking for any account lockout events (4740) triggered by the attack.*
 
 No lockouts either, even with 24 wrong-password attempts against the same account. This tracks with something I learned in my AD lab: account lockout isn't automatic, it depends on the domain's lockout policy, and by default this lab doesn't have one configured.
 
@@ -126,6 +138,8 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 It runs hourly and triggers if any source racks up 5 or more failures in a 5-minute window.
 
 ![Saved alert configuration](screenshots/08-alert-config.png)
+
+*The saved alert, running hourly and triggering on 5+ failures in a 5-minute window.*
 
 ## What I actually learned from this
 
