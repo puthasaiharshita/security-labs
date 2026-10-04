@@ -22,7 +22,11 @@ Even after that, my grouped query kept showing `-` instead of `Administrator` fo
 
 ![Confirming failed logon data is being collected](screenshots/01-raw-4625-events.png)
 
-*First check that 4625 events were actually landing in Splunk and that the Account_Name field was populated correctly, before I moved on to the full attack from DC01.*
+<p align="center">
+<img src="screenshots/01-raw-4625-events.png"><br>
+<em>First check that 4625 events were actually landing in Splunk and that the Account_Name field was populated correctly, before I moved on to the full attack from DC01.</em>
+</p>
+<br>
 
 ## Hunting for the attack
 
