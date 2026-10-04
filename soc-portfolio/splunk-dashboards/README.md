@@ -20,8 +20,6 @@ Even after that, my grouped query kept showing `-` instead of `Administrator` fo
 - **Sourcetype:** `WinEventLog:Security`
 - **Event IDs used:** 4625 (failed logon), 4624 (successful logon), 4740 (account lockout)
 
-![Confirming failed logon data is being collected](screenshots/01-raw-4625-events.png)
-
 <p align="center">
 <img src="screenshots/01-raw-4625-events.png"><br>
 <em>First check that 4625 events were actually landing in Splunk and that the Account_Name field was populated correctly, before I moved on to the full attack from DC01.</em>
@@ -34,9 +32,11 @@ Even after that, my grouped query kept showing `-` instead of `Administrator` fo
 
 Before writing any grouping logic, I expanded a single 4625 event just to see what fields were actually available.
 
-![Expanded 4625 event showing both Account Name fields](screenshots/02-event-detail.png)
-
-*A single raw 4625 event, expanded to see every field it actually logs.*
+<p align="center">
+<img src="screenshots/02-event-detail.png"><br>
+<em>A single raw 4625 event, expanded to see every field it actually logs.</em>
+</p>
+<br>
 
 This is where I found the two Account Name values, the real one being `Administrator`, and the source address, `192.168.56.10`, which is DC01.
 
@@ -48,9 +48,11 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | stats count BY Source_Network_Address, target_account
 ```
 
-![Failed logons grouped by source and target account](screenshots/03-failed-logons-by-source.png)
-
-*Failures grouped by where they came from and which account they were aimed at.*
+<p align="center">
+<img src="screenshots/03-failed-logons-by-source.png"><br>
+<em>Failures grouped by where they came from and which account they were aimed at.</em>
+</p>
+<br>
 
 This gave me the real picture: **192.168.56.10 made 24 failed attempts against Administrator, and 4 more against a fake account called fakeadmin**, all from the same source. The blank row (5 events with no source or account) are the clock-sync failures from earlier, they never got far enough to even log who was being targeted.
 
@@ -61,9 +63,11 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | timechart span=5m count BY Source_Network_Address
 ```
 
-![Timeline of failed logon attempts](screenshots/04-failure-timeline.png)
-
-*Two sharp spikes, each packing over a dozen failures into a few minutes.*
+<p align="center">
+<img src="screenshots/04-failure-timeline.png"><br>
+<em>Two sharp spikes, each packing over a dozen failures into a few minutes.</em>
+</p>
+<br>
 
 The chart makes it obvious these weren't someone typing a password wrong once or twice, there are two sharp spikes, each with over a dozen failures packed into a few minutes. That burst pattern is the actual signature of an automated attack, not a human mistake.
 
@@ -74,9 +78,11 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | stats count BY Sub_Status, Failure_Reason
 ```
 
-![Failure reasons breakdown](screenshots/05-failure-reasons.png)
-
-*Why each attempt actually failed, broken down by status code.*
+<p align="center">
+<img src="screenshots/05-failure-reasons.png"><br>
+<em>Why each attempt actually failed, broken down by status code.</em>
+</p>
+<br>
 
 - **24** failed with `0xC000006A`, wrong password for a real account
 - **4** failed with `0xC0000064`, the account doesn't exist at all
@@ -94,9 +100,11 @@ index=wineventlog sourcetype="WinEventLog:Security" (EventCode=4625 OR EventCode
 | where failures >=1 AND successes >=1
 ```
 
-![No successful logon followed the failed attempts](screenshots/06-success-after-failure.png)
-
-*Checking whether any failed source later managed a successful logon.*
+<p align="center">
+<img src="screenshots/06-success-after-failure.png"><br>
+<em>Checking whether any failed source later managed a successful logon.</em>
+</p>
+<br>
 
 No results. As far as the logs show, DC01 never actually got into the Administrator account on Client01, it just kept failing.
 
@@ -107,9 +115,11 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4740
 | table _time, Account_Name, Caller_Computer_Name
 ```
 
-![No lockout events found](screenshots/07-lockouts.png)
-
-*Checking for any account lockout events (4740) triggered by the attack.*
+<p align="center">
+<img src="screenshots/07-lockouts.png"><br>
+<em>Checking for any account lockout events (4740) triggered by the attack.</em>
+</p>
+<br>
 
 No lockouts either, even with 24 wrong-password attempts against the same account. This tracks with something I learned in my AD lab: account lockout isn't automatic, it depends on the domain's lockout policy, and by default this lab doesn't have one configured.
 
@@ -141,9 +151,11 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 
 It runs hourly and triggers if any source racks up 5 or more failures in a 5-minute window.
 
-![Saved alert configuration](screenshots/08-alert-config.png)
-
-*The saved alert, running hourly and triggering on 5+ failures in a 5-minute window.*
+<p align="center">
+<img src="screenshots/08-alert-config.png"><br>
+<em>The saved alert, running hourly and triggering on 5+ failures in a 5-minute window.</em>
+</p>
+<br>
 
 ## What I actually learned from this
 
