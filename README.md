@@ -1,10 +1,10 @@
 # Security Portfolio — Putha Sai Harshita
-**Aspiring SOC Analyst** | Building hands-on blue-team labs (Active Directory, Windows Event Logging, detection fundamentals) | Red-team background from PortSwigger Web Security Academy (48 labs solved across SQL Injection, XSS, and Authentication)
+**Aspiring SOC Analyst** | Building hands-on blue-team labs (Active Directory, Windows Event Logging, detection fundamentals) | Red-team background from PortSwigger Web Security Academy (38 labs solved across SQL Injection and XSS)
 🔗 [LinkedIn](https://www.linkedin.com/in/harshita-sai-putha-44144625b/)
 
 ## About
 
-I'm working toward a SOC analyst role, and I believe understanding how attacks actually work makes for sharper detection — so this portfolio has two sides. My blue-team labs (Active Directory setup, Windows Event Logging, failed-logon detection) are where I'm building hands-on defensive and monitoring skills. My red-team background comes from the PortSwigger Web Security Academy, where I worked through 48 real vulnerability classes with Burp Suite, documenting methodology rather than just the "solved" checkbox — the same instinct for asking "how would I catch this happening?" carries directly into SOC work.
+I'm working toward a SOC analyst role, and I believe understanding how attacks actually work makes for sharper detection — so this portfolio has two sides. My blue-team labs (Active Directory setup, Windows Event Logging, failed-logon detection) are where I'm building hands-on defensive and monitoring skills. My red-team background comes from the PortSwigger Web Security Academy, where I worked through 38 labs with Burp Suite, documenting methodology rather than just the "solved" checkbox — the same instinct for asking "how would I catch this happening?" carries directly into SOC work.
 
 **Focus areas:** SOC Fundamentals, Detection & Monitoring, Active Directory Security
 **Secondary:** Web Application Penetration Testing (VAPT), Cloud Security (AWS), Network Security (Juniper, Aviatrix)
@@ -17,13 +17,15 @@ I'm working toward a SOC analyst role, and I believe understanding how attacks a
 | Web AppSec | Burp Suite (Proxy, Repeater, Intruder), SQLi, XSS |
 | Cloud | AWS |
 | Networking | Juniper Networks, Aviatrix, general networking fundamentals |
-| Automation | RPA |
+| Automation / Scripting | Python (file handling, regex, log parsing), Git/GitHub, RPA |
 | OS | Linux, Windows Server |
 
 ## Write-ups
 
-### SOC / Detection Labs (1 completed)
+### SOC / Detection Labs (3 completed)
 - [Built My First Active Directory SOC Lab](soc-detection-labs/active-directory-soc-lab/README.md)
+- [Splunk Dashboards](soc-portfolio/splunk-dashboards/README.md)
+- [Python Auth Log Parser: Failed Login Detection with Regex](soc-portfolio/python-log-parser/README.md)
 
 ### SQL Injection (15 solved)
 - [Retrieving Hidden Data via WHERE Clause Manipulation](sql-injection/01-retrieve-hidden-data.md)
@@ -84,27 +86,6 @@ I'm working toward a SOC analyst role, and I believe understanding how attacks a
 - [Reflected XSS in a JavaScript URL With Some Characters Blocked](xss/29-reflected-js-url-chars-blocked.md) *(Expert)*
 - [Reflected XSS Protected by Very Strict CSP, With Dangling Markup Attack](xss/30-strict-csp-dangling-markup.md)
 
-### Authentication (5 solved)
-- [Username Enumeration via Different Responses](authentication/01-username-enum-different-responses.md)
-- [2FA Simple Bypass](authentication/02-2fa-simple-bypass.md)
-- [Password Reset Broken Logic](authentication/03-password-reset-broken-logic.md)
-- [Username Enumeration via Subtly Different Responses](authentication/04-username-enum-subtle-responses.md)
-- [Offline Password Cracking](authentication/05-offline-password-cracking.md)
-
-#### Documented (Pending Burp Suite Pro)
-Methodology fully researched and documented; execution blocked in Community
-Edition by Intruder payload/rate limitations on brute-force-heavy labs:
-
-- [Username Enumeration via Response Timing](authentication/06-username-enum-response-timing.md)
-- [Broken Brute-Force Protection, IP Block](authentication/07-broken-bruteforce-ip-block.md)
-- [Username Enumeration via Account Lock](authentication/08-username-enum-account-lock.md)
-- [2FA Broken Logic](authentication/09-2fa-broken-logic.md)
-- [Brute-Forcing a Stay-Logged-In Cookie](authentication/10-bruteforce-stay-logged-in-cookie.md)
-- [Password Reset Poisoning via Middleware](authentication/11-password-reset-poisoning-middleware.md)
-- [Password Brute-Force via Password Change](authentication/12-password-bruteforce-via-change.md)
-- [Broken Brute-Force Protection, Multiple Credentials per Request](authentication/13-broken-bruteforce-multi-credential.md) *(Expert)*
-- [2FA Bypass Using a Brute-Force Attack](authentication/14-2fa-bypass-bruteforce.md) *(Expert)*
-
 *(More labs added as I complete them.)*
 
 ## Currently Learning / Next Steps
@@ -118,15 +99,16 @@ completion once I have Pro access.
 
 ## Structure
 
+```
 .
 ├── soc-detection-labs/
 │   └── active-directory-soc-lab/
+├── soc-portfolio/
+│   ├── splunk-dashboards/
+│   └── python-log-parser/
 ├── sql-injection/
-├── xss/
-├── authentication/
-├── assets/screenshots/
-└── resources/
-    └── TEMPLATE.md
+└── xss/
+```
 
 
 Each write-up follows: **Objective → Vulnerability Overview → Methodology → PoC →
