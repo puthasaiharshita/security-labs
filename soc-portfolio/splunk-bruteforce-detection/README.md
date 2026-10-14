@@ -14,11 +14,22 @@ Getting the attack to actually register properly took longer than the investigat
 
 Even after that, my grouped query kept showing `-` instead of `Administrator` for the targeted account. Turned out a 4625 event logs two separate "Account Name" fields, one for the Subject (blank here) and one for the account actually being attacked, and Splunk was grabbing the wrong one by default. I fixed it with `mvindex(Account_Name,-1)`.
 
+### Lab environment
+
+| Role | Name | Details |
+|---|---|---|
+| Attacker | DC01 | `192.168.56.10`, ran `net use` with wrong passwords |
+| Target + Splunk host | Client01 | Windows hostname `DESKTOP-0U2KVQR.corp.local`, Splunk Enterprise 10.6.0.5 |
+| Index / sourcetype | `wineventlog` / `WinEventLog:Security` | Windows Security event log |
+
+
 ## The logs I'm working with
 
 - **Index:** `wineventlog`
 - **Sourcetype:** `WinEventLog:Security`
 - **Event IDs used:** 4625 (failed logon), 4624 (successful logon), 4740 (account lockout)
+  
+> **Note:** The investigation screenshots (01 to 08) are from my first attack run, which produced 33 failed logons. I ran the attack again later, so the alert query result (screenshot 09) covers 49 events in total and shows three 5-minute windows over the threshold instead of two.
 
 <p align="center">
 <img src="screenshots/01-raw-4625-events.png"><br>
