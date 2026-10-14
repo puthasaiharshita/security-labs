@@ -30,7 +30,7 @@ Even after that, my grouped query kept showing `-` instead of `Administrator` fo
 - **Event IDs used:** 4625 (failed logon), 4624 (successful logon), 4740 (account lockout)
   
 > **Note:** The investigation screenshots (01 to 08) are from my first attack run, which produced 33 failed logons. I ran the attack again later, so the alert query result (screenshot 09) covers 49 events in total and shows three 5-minute windows over the threshold instead of two.
-
+<br>
 <p align="center">
 <img src="screenshots/01-raw-4625-events.png"><br>
 <em>First check that 4625 events were actually landing in Splunk and that the Account_Name field was populated correctly, before I moved on to the full attack from DC01.</em>
@@ -58,7 +58,7 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | eval target_account=mvindex(Account_Name,-1)
 | stats count BY Source_Network_Address, target_account
 ```
-
+<br>
 <p align="center">
 <img src="screenshots/03-failed-logons-by-source.png"><br>
 <em>Failures grouped by where they came from and which account they were aimed at.</em>
@@ -73,7 +73,7 @@ This gave me the real picture: **192.168.56.10 made 24 failed attempts against A
 index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | timechart span=5m count BY Source_Network_Address
 ```
-
+<br>
 <p align="center">
 <img src="screenshots/04-failure-timeline.png"><br>
 <em>Two sharp spikes, each packing over a dozen failures into a few minutes.</em>
@@ -88,7 +88,7 @@ The chart makes it obvious these weren't someone typing a password wrong once or
 index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | stats count BY Sub_Status, Failure_Reason
 ```
-
+<br>
 <p align="center">
 <img src="screenshots/05-failure-reasons.png"><br>
 <em>Why each attempt actually failed, broken down by status code.</em>
@@ -110,7 +110,7 @@ index=wineventlog sourcetype="WinEventLog:Security" (EventCode=4625 OR EventCode
 | stats count(eval(outcome="failure")) AS failures count(eval(outcome="success")) AS successes BY Source_Network_Address, target_account
 | where failures >=1 AND successes >=1
 ```
-
+<br>
 <p align="center">
 <img src="screenshots/06-success-after-failure.png"><br>
 <em>Checking whether any failed source later managed a successful logon.</em>
@@ -125,7 +125,7 @@ No results. As far as the logs show, DC01 never actually got into the Administra
 index=wineventlog sourcetype="WinEventLog:Security" EventCode=4740
 | table _time, Account_Name, Caller_Computer_Name
 ```
-
+<br>
 <p align="center">
 <img src="screenshots/07-lockouts.png"><br>
 <em>Checking for any account lockout events (4740) triggered by the attack.</em>
@@ -166,7 +166,7 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | stats count AS failures dc(target_account) AS accounts BY _time, Source_Network_Address
 | where failures >= 5
 ```
-
+<br>
 <p align="center">
 <img src="screenshots/09-alert-query-results.png"><br>
 <em>The alert query run against the lab data: three 5-minute windows from 192.168.56.10 exceed the 5-failure threshold.</em>
@@ -192,6 +192,6 @@ It runs hourly and triggers if any source racks up 5 or more failures in a 5-min
 
 The investigation part, the SPL, the stats tables, wasn't the hard part. The hard part was everything underneath it: getting two VMs to actually talk to each other, realizing Kerberos cares about clock drift down to the minute, and discovering that a single event type can have two fields with the same name pointing at completely different things. None of that is something you'd learn just reading about Splunk, I only found it because the attack kept failing for reasons that had nothing to do with Splunk itself.
 
-If I did this again, I'd check the firewall and time sync between my VMs before touching Splunk at all, that would've saved me the most time.
+
 
 
