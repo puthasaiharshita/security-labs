@@ -10,7 +10,7 @@ I installed Splunk Enterprise directly on Client01 and pointed it at the Windows
 
 ## Everything that went wrong first
 
-Getting the attack to actually register properly took longer than the investigation itself. First, Client01 was rejecting the connection outright, File and Printer Sharing was off, so nothing from DC01 could even reach it. Once that was fixed, the attempts still failed in a strange way, `Status: 0xC0000133`, which turned out to be a Kerberos time-sync error: DC01 and Client01's clocks were too far apart for the domain to accept the login attempt at all. A few of my 33 failed events (the ones with `Sub_Status: 0x0`) are actually from this stage, before I got the clocks synced.
+Getting the attack to actually register properly took longer than the investigation itself. First, Client01 was rejecting the connection outright, File and Printer Sharing was off, so nothing from DC01 could even reach it. Once that was fixed, the attempts still failed in a strange way, `Status: 0xC0000133`, which turned out to be a Kerberos time-sync error: DC01 and Client01's clocks were too far apart for the domain to accept the login attempt at all. A few of my 33 failed events from the first run (the ones with Sub_Status: 0x0) are actually from this stage, before I got the clocks synced.
 
 Even after that, my grouped query kept showing `-` instead of `Administrator` for the targeted account. Turned out a 4625 event logs two separate "Account Name" fields, one for the Subject (blank here) and one for the account actually being attacked, and Splunk was grabbing the wrong one by default. I fixed it with `mvindex(Account_Name,-1)`.
 
@@ -136,9 +136,16 @@ No lockouts either, even with 24 wrong-password attempts against the same accoun
 
 ## So what actually happened here
 
-This is a **true positive**, it's an attack I ran myself to test the detection, but the pattern is exactly what a real brute-force attempt looks like: dozens of failed logins from one source, in short bursts, targeting both a real account (Administrator) and a made-up one. That mix is a pretty classic sign of password guessing rather than someone just mistyping their own password.
+This is a simulated attack that I ran myself to test the detection, and the detection correctly caught it (a true positive). The pattern is exactly what a real brute-force attempt looks like: dozens of failed logins from one source, in short bursts, targeting both a real account (Administrator) and a made-up one. That mix is a pretty classic sign of password guessing rather than someone just mistyping their own password.
 
 **MITRE ATT&CK:** this maps to **Brute Force (T1110)**, more specifically **Password Guessing (T1110.001)** since the attempts were aimed at a specific named account rather than spread across many accounts.
+
+### MITRE ATT&CK mapping
+
+| Tactic | Technique | Evidence |
+|---|---|---|
+| Credential Access | T1110.001 Brute Force: Password Guessing | 24 failed logons (first run, `0xC000006A`) against `Administrator` from `192.168.56.10` |
+| Credential Access | T1110.001 Brute Force: Password Guessing | 4 failed logons (first run, `0xC0000064`) against the nonexistent account `fakeadmin` |
 
 **Severity:** I'd call this medium. No successful logon and no lockout, but the volume and pattern alone would be worth an analyst's attention in a real environment, especially since it hit the built-in Administrator account.
 
@@ -160,6 +167,12 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | where failures >= 5
 ```
 
+<p align="center">
+<img src="screenshots/09-alert-query-results.png"><br>
+<em>The alert query run against the lab data: three 5-minute windows from 192.168.56.10 exceed the 5-failure threshold.</em>
+</p>
+<br>
+
 It runs hourly and triggers if any source racks up 5 or more failures in a 5-minute window.
 
 <p align="center">
@@ -168,6 +181,13 @@ It runs hourly and triggers if any source racks up 5 or more failures in a 5-min
 </p>
 <br>
 
+### Limitations
+
+- This is lab data from a single source, so the 5-failures-in-5-minutes threshold is illustrative and would need tuning against real traffic.
+- No account lockout policy was configured, so no 4740 events appeared.
+- The 5 events with Sub_Status `0x0` came from a time-sync fault in my lab, not from the attack itself.
+- Counts in screenshots 01 to 08 are from the first attack run. Later runs added more events (see the note above).
+  
 ## What I actually learned from this
 
 The investigation part, the SPL, the stats tables, wasn't the hard part. The hard part was everything underneath it: getting two VMs to actually talk to each other, realizing Kerberos cares about clock drift down to the minute, and discovering that a single event type can have two fields with the same name pointing at completely different things. None of that is something you'd learn just reading about Splunk, I only found it because the attack kept failing for reasons that had nothing to do with Splunk itself.
