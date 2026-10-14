@@ -22,10 +22,11 @@ I'm working toward a SOC analyst role, and I believe understanding how attacks a
 
 ## Write-ups
 
-### SOC / Detection Labs (3 completed)
+### SOC / Detection Labs (4 completed)
 - [Built My First Active Directory SOC Lab](soc-detection-labs/active-directory-soc-lab/README.md)
 - [Splunk Dashboards](soc-portfolio/splunk-dashboards/README.md)
 - [Python Auth Log Parser: Failed Login Detection with Regex](soc-portfolio/python-log-parser/README.md)
+-  [IOC Enrichment Tool: VirusTotal and AbuseIPDB Lookups](https://github.com/puthasaiharshita/ioc-enrichment-tool)
 
 ### SQL Injection (15 solved)
 - [Retrieving Hidden Data via WHERE Clause Manipulation](sql-injection/01-retrieve-hidden-data.md)
