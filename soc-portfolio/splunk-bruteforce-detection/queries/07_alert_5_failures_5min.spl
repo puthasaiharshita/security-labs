@@ -1,0 +1,5 @@
+index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
+| eval target_account=mvindex(Account_Name,-1)
+| bin _time span=5m
+| stats count AS failures dc(target_account) AS accounts BY _time, Source_Network_Address
+| where failures >= 5
