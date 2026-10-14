@@ -6,7 +6,7 @@ This ended up being a lot more hands-on than I expected. Half of this write-up i
 
 ## How I set this up
 
-I installed Splunk Enterprise directly on Client01 and pointed it at the Windows Security event log, everything lives in an index I called `wineventlog`. To get real attack traffic instead of just testing locally, I went over to DC01 and ran failed login attempts against Client01 over the network using `net use`, targeting the Administrator account with wrong passwords, and a fake account that doesn't exist, so I'd have both kinds of failures to work with.
+I installed Splunk Enterprise directly on Client01 and pointed it at the Windows Security event log, everything lives in an index I called `wineventlog`. To get real attack traffic instead of just testing locally, I went over to DC01 and ran failed login attempts against Client01 over the network using `net use`, targeting the Administrator account with wrong passwords, and a fake account that doesn't exist, so I'd have both kinds of failures to work with. Client01 is the Windows machine whose hostname appears in the screenshots as DESKTOP-0U2KVQR.
 
 ## Everything that went wrong first
 
