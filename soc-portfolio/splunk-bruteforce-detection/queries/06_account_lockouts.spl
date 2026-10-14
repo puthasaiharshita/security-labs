@@ -1,0 +1,2 @@
+index=wineventlog sourcetype="WinEventLog:Security" EventCode=4740
+| table _time, Account_Name, Caller_Computer_Name
