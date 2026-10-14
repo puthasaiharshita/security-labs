@@ -1,0 +1,2 @@
+index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
+| head 20
