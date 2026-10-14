@@ -1,0 +1,2 @@
+index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
+| timechart span=5m count BY Source_Network_Address
