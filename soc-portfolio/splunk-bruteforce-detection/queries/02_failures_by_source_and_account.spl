@@ -1,0 +1,3 @@
+index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
+| eval target_account=mvindex(Account_Name,-1)
+| stats count BY Source_Network_Address, target_account
