@@ -1,0 +1,7 @@
+SecurityEvent
+| where EventID==4688
+| where CommandLine contains "-EncodedCommand"
+| extend B64 = trim(" ", tostring(split(CommandLine, "-EncodedCommand")[1]))
+| extend Decoded = replace_string(base64_decode_tostring(B64), "\0", "")
+| project TimeGenerated, ParentProcessName, B64, Decoded
+| order by TimeGenerated desc
