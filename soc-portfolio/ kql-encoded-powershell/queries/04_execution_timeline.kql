@@ -1,0 +1,5 @@
+SecurityEvent
+| where EventID==4688
+| where CommandLine contains "-EncodedCommand"
+| summarize Executions = count() by bin(TimeGenerated, 5m), ParentProcessName
+| order by TimeGenerated asc
