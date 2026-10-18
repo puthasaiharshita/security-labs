@@ -18,22 +18,22 @@ Getting the logs into Sentinel took more work than the hunt itself, so this writ
 
 Client01 runs on my own computer, not in Azure, and Sentinel's Windows connector only lists machines it can see in an Azure subscription. So the first job was registering Client01 with **Azure Arc**, which makes a non-Azure machine show up as an Azure resource. I generated the onboarding script in the portal, ran it in an administrator PowerShell window on Client01, signed in with the device code, and the machine appeared as **Connected**.
 
-<p align="center">
-<img src="screenshots/01-arc-machine-connected.png"><br>
-<em>Client01 registered in Azure Arc and showing as Connected.</em>
-</p>
+<p align="center"> 
+<kbd><kbd><img src="screenshots/01-arc-machine-connected.png"></kbd></kbd><br>
+  <em>Client01 registered in Azure Arc and showing as Connected.</em> 
+</p> 
 <br>
 
 Then I created the data collection rule from the Windows Security Events connector and attached Client01 to it.
 
 <p align="center">
-<img src="screenshots/02-dcr-resource-association.png"><br>
+<kbd><kbd><img src="screenshots/02-dcr-resource-association.png"></kbd></kbd><br>
 <em>The collection rule is associated with Client01 and has passed its initial checks.</em>
 </p>
 <br>
 
 <p align="center">
-<img src="screenshots/04-sentinel-connector-connected.png"><br>
+<kbd><kbd><img src="screenshots/04-sentinel-connector-connected.png"></kbd></kbd><br>
 <em>The Windows Security Events via AMA connector showing Connected, using the rule <code>dcr-client01-security</code>.</em>
 </p>
 <br>
@@ -50,8 +50,9 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit" /
 gpupdate /force
 ```
 
+<br>
 <p align="center">
-<img src="screenshots/03-enable-process-auditing.png"><br>
+<kbd><kbd><img src="screenshots/03-enable-process-auditing.png"></kbd></kbd><br>
 <em>Auditing and command line logging enabled. The last command failed, which is explained below.</em>
 </p>
 <br>
@@ -67,8 +68,9 @@ SecurityEvent
 | take 10
 ```
 
+<br>
 <p align="center">
-<img src="screenshots/05-securityevent-ingestion.png"><br>
+<kbd><kbd><img src="screenshots/05-securityevent-ingestion.png"></kbd></kbd><br>
 <em>Security events from Client01 flowing into the <code>SecurityEvent</code> table.</em>
 </p>
 <br>
@@ -85,8 +87,9 @@ $enc = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($cmd))
 powershell.exe -NoProfile -EncodedCommand $enc
 ```
 
+<br>
 <p align="center">
-<img src="screenshots/06-encoded-powershell-run.png"><br>
+<kbd><kbd><img src="screenshots/06-encoded-powershell-run.png"></kbd></kbd><br>
 <em>Running the Base64-encoded command on Client01. It prints <code>corp\administrator</code>.</em>
 </p>
 <br>
@@ -105,8 +108,9 @@ SecurityEvent
 | order by TimeGenerated desc
 ```
 
+<br>
 <p align="center">
-<img src="screenshots/07-hunt-encoded-command-4688.png"><br>
+<kbd><kbd><kbd><img src="screenshots/07-hunt-encoded-command-4688.png"></kbd></kbd></kbd><br>
 <em>Hunt for Event 4688 with <code>-enc</code> or <code>EncodedCommand</code> in the command line. The command line column is cut off in this view, and the decoded payload is in the next screenshot.</em>
 </p>
 <br>
@@ -129,8 +133,9 @@ SecurityEvent
 
 PowerShell encodes commands as UTF-16, so the decoded text contains null characters between letters. The `replace_string` part removes them so the result is readable.
 
+<br>
 <p align="center">
-<img src="screenshots/08-decoded-payload.png"><br>
+<kbd><kbd><img src="screenshots/08-decoded-payload.png"></kbd></kbd><br>
 <em>The Base64 string <code>dwBoAG8AYQBtAGkA</code> decoded back to <code>whoami</code>, for both events.</em>
 </p>
 <br>
@@ -147,8 +152,9 @@ SecurityEvent
 | order by TimeGenerated asc
 ```
 
+<br>
 <p align="center">
-<img src="screenshots/09-execution-timeline.png"><br>
+<kbd><kbd><img src="screenshots/09-execution-timeline.png"></kbd></kbd><br>
 <em>Encoded command executions grouped into 5-minute windows.</em>
 </p>
 <br>
@@ -160,7 +166,7 @@ The events fall in two separate 5-minute windows, one execution each: 13:50 and 
 Hunting by hand only works while someone is looking, so I turned the idea into a scheduled analytics rule in Sentinel.
 
 <p align="center">
-<img src="screenshots/10-analytics-rule-enabled.png"><br>
+<kbd><kbd><img src="screenshots/10-analytics-rule-enabled.png"></kbd></kbd><br>
 <em>The scheduled analytics rule, enabled, with severity Medium and tactic Execution.</em>
 </p>
 <br>
