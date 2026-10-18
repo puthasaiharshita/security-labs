@@ -20,7 +20,7 @@ Client01 runs on my own computer, not in Azure, and Sentinel's Windows connector
 
 <p align="center"> 
 <kbd><kbd><img src="screenshots/01-arc-machine-connected.png"></kbd></kbd><br>
-  <em>Client01 registered in Azure Arc and showing as Connected.</em> 
+<em>Client01 registered in Azure Arc and showing as Connected.</em> 
 </p> 
 <br>
 
@@ -110,7 +110,7 @@ SecurityEvent
 
 <br>
 <p align="center">
-<kbd><kbd><kbd><img src="screenshots/07-hunt-encoded-command-4688.png"></kbd></kbd></kbd><br>
+<kbd><kbd><img src="screenshots/07-hunt-encoded-command-4688.png"></kbd></kbd><br>
 <em>Hunt for Event 4688 with <code>-enc</code> or <code>EncodedCommand</code> in the command line. The command line column is cut off in this view, and the decoded payload is in the next screenshot.</em>
 </p>
 <br>
