@@ -1,0 +1,5 @@
+SecurityEvent
+| where EventID==4688
+| where CommandLine has_any ("-enc", "EncodedCommand")
+| project TimeGenerated, Computer, Account, NewProcessName, CommandLine, ParentProcessName
+| order by TimeGenerated desc
