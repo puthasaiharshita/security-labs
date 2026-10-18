@@ -13,7 +13,7 @@ I'm working toward a SOC analyst role, and I believe understanding how attacks a
 
 | Category | Tools / Areas |
 |---|---|
-| SOC / Detection | Splunk (SPL), Windows Event Viewer, Active Directory, Event Log Analysis, Audit Policy Configuration, MITRE ATT&CK mapping |
+| SOC / Detection | Splunk (SPL), Microsoft Sentinel (KQL), Windows Event Viewer, Active Directory, Event Log Analysis, Audit Policy Configuration, MITRE ATT&CK mapping |
 | Web AppSec | Burp Suite (Proxy, Repeater, Intruder), SQLi, XSS |
 | Cloud | AWS |
 | Networking | Juniper Networks, Aviatrix, general networking fundamentals |
@@ -22,11 +22,12 @@ I'm working toward a SOC analyst role, and I believe understanding how attacks a
 
 ## Write-ups
 
-### SOC / Detection Labs (4 completed)
+### SOC / Detection Labs (5 completed)
 - [Built My First Active Directory SOC Lab](soc-detection-labs/active-directory-soc-lab/README.md)
 - [Detecting Repeated Failed Logons with Splunk (T1110.001)](soc-portfolio/splunk-bruteforce-detection/README.md)
 - [Python Auth Log Parser: Failed Login Detection with Regex](soc-portfolio/python-log-parser/README.md)
 - [IOC Enrichment Tool: VirusTotal and AbuseIPDB Lookups](https://github.com/puthasaiharshita/ioc-enrichment-tool)
+- [Hunting Encoded PowerShell with Microsoft Sentinel (KQL, T1059.001)](soc-portfolio/kql-encoded-powershell/README.md)
 
 ### Web Application Security (38 labs solved)
 My PortSwigger Web Security Academy write-ups are in their own repo: **[web-security-labs](https://github.com/puthasaiharshita/web-security-labs)**
@@ -40,8 +41,7 @@ Each write-up follows: **Objective → Vulnerability Overview → Methodology �
 
 ## Currently Learning / Next Steps
 
-- Building more SOC detection write-ups (next: KQL threat hunting with Microsoft Sentinel / Defender)
-- Strengthening SOC fundamentals: log analysis, alert triage, MITRE ATT&CK mapping
+- Building more SOC detection write-ups (next: phishing analysis and incident response playbooks)
 
 ## Structure
 
@@ -51,8 +51,7 @@ Each write-up follows: **Objective → Vulnerability Overview → Methodology �
 │   └── active-directory-soc-lab/
 └── soc-portfolio/
     ├── splunk-bruteforce-detection/
-    │   ├── queries/
-    │   └── screenshots/
+    ├── kql-encoded-powershell/
     └── python-log-parser/
 ```
 
