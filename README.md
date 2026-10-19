@@ -1,6 +1,6 @@
 # Security Portfolio — Putha Sai Harshita
 **Aspiring SOC Analyst** | Building hands-on blue-team labs (Active Directory, Windows Event Logging, detection fundamentals) | Red-team background from PortSwigger Web Security Academy (38 labs solved across SQL Injection and XSS)
-🔗 [LinkedIn](https://www.linkedin.com/in/harshita-sai-putha-44144625b/)
+🔗 [LinkedIn](https://www.linkedin.com/in/harshita-sai-putha)
 
 ## About
 
