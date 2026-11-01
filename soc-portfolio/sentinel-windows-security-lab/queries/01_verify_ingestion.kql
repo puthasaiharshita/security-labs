@@ -1,0 +1,3 @@
+// Purpose: Confirm Windows Security events from vm-win-lab are reaching the workspace
+SecurityEvent
+| take 5
