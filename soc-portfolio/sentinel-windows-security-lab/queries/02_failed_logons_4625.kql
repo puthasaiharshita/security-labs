@@ -1,0 +1,4 @@
+// Purpose: List failed logons (EventID 4625) from my wrong-password RDP attempts
+SecurityEvent
+| where EventID == 4625
+| project TimeGenerated, Account, Computer, LogonType, IpAddress
