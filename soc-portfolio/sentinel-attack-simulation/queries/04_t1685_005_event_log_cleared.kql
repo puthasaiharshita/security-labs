@@ -1,0 +1,8 @@
+// Technique: T1685.005 Clear Windows Event Logs (Defense Evasion), formerly T1070.001
+// Source:    Sysmon EventID 1 (process creation) for wevtutil.exe
+Event
+| where Source == "Microsoft-Windows-Sysmon"
+| where EventID == 1
+| where RenderedDescription has "wevtutil"
+| project TimeGenerated, Computer, RenderedDescription
+| order by TimeGenerated desc

@@ -1,0 +1,12 @@
+// Technique: T1059.003 Command and Scripting Interpreter: Windows Command Shell (Execution)
+// Source:    Sysmon EventID 1 (process creation)
+// Note:      This matches the Atomic test's file name, so it finds my test, not cmd.exe scripts in general.
+// Fix:       ParentCommandLine now uses its own pattern. In the screenshot it repeated CommandLine.
+Event
+| where Source == "Microsoft-Windows-Sysmon"
+| where EventID == 1
+| where RenderedDescription contains "T1059.003_script.bat"
+| extend CommandLine = extract(@"CommandLine: (.+)", 1, RenderedDescription)
+| extend ParentCommandLine = extract(@"ParentCommandLine: (.+)", 1, RenderedDescription)
+| project TimeGenerated, Computer, CommandLine, ParentCommandLine
+| order by TimeGenerated desc

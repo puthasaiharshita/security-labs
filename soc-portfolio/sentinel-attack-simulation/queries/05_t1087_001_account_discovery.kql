@@ -1,0 +1,11 @@
+// Technique: T1087.001 Account Discovery: Local Account (Discovery)
+// Source:    Sysmon EventID 1 (process creation)
+Event
+| where Source == "Microsoft-Windows-Sysmon"
+| where EventID == 1
+| where RenderedDescription contains "net user"
+    or RenderedDescription contains "net localgroup"
+    or ParameterXml contains "cmdkey"
+| extend CommandLine = extract(@"CommandLine: (.+)", 1, RenderedDescription)
+| project TimeGenerated, Computer, CommandLine
+| order by TimeGenerated desc
