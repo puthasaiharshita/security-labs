@@ -1,5 +1,5 @@
 // Technique: T1087.001 Account Discovery: Local Account (Discovery)
-// Source:    Sysmon EventID 1 (process creation)
+
 Event
 | where Source == "Microsoft-Windows-Sysmon"
 | where EventID == 1
