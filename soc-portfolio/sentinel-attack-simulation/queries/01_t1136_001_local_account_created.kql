@@ -1,5 +1,5 @@
 // Technique: T1136.001 Create Account: Local Account (Persistence)
-// Source:    Security log, EventID 4720 (a user account was created)
+
 SecurityEvent
 | where TimeGenerated > ago(30m)
 | where EventID == 4720
