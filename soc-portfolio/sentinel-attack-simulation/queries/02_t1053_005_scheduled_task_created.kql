@@ -1,5 +1,5 @@
 // Technique: T1053.005 Scheduled Task/Job: Scheduled Task (Persistence)
-// Source:    Security log, EventID 4698 (needs the "Other Object Access Events" audit policy)
+
 SecurityEvent
 | where EventID == 4698
 | where TimeGenerated > ago(3h)
