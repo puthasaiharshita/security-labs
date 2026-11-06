@@ -1,0 +1,11 @@
+// T1685.005 Clear Windows Event Logs (ATT&CK v19; formerly T1070.001)
+// Detects the outcome (EventID 1102) and the commands (Sysmon EventID 1).
+// Schedule: every 5 min, lookback 10 min. Severity: High.
+let A = SecurityEvent
+| where EventID == 1102
+| project TimeGenerated, Computer, Hit = "1102 log cleared", Details = Activity;
+let B = Event
+| where Source == "Microsoft-Windows-Sysmon" and EventID == 1
+| where RenderedDescription contains "Clear-EventLog" or RenderedDescription contains "wevtutil"
+| project TimeGenerated, Computer, Hit = "Sysmon command", Details = RenderedDescription;
+union A, B
