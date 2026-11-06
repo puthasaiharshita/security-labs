@@ -1,0 +1,72 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/cb9fb02a-a9d0-48fe-b4c2-5cc95b2b8326')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/cb9fb02a-a9d0-48fe-b4c2-5cc95b2b8326')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2023-12-01-preview",
+            "properties": {
+                "displayName": "T1070.001 - Windows event log cleared",
+                "description": "",
+                "severity": "High",
+                "enabled": true,
+                "query": "let A = SecurityEvent\r\n| where EventID == 1102\r\n| project TimeGenerated, Computer, Hit = \"1102 log cleared\", Details = Activity;\r\nlet B = Event \r\n| where Source == \"Microsoft-Windows-Sysmon\" and EventID ==1 \r\n| where RenderedDescription contains \"Clear-EventLog\" or RenderedDescription contains \"wevtutil\" | project TimeGenerated, Computer, Hit =\" Sysmon command\", Details = RenderedDescription;\r\nunion A, B",
+                "queryFrequency": "PT5M",
+                "queryPeriod": "PT10M",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "startTimeUtc": null,
+                "tactics": [
+                    "DefenseEvasion"
+                ],
+                "techniques": [
+                    "T1070"
+                ],
+                "subTechniques": [
+                    "T1070.001"
+                ],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": [
+                    {
+                        "entityType": "Host",
+                        "fieldMappings": [
+                            {
+                                "identifier": "FullName",
+                                "columnName": "Computer"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null,
+                "templateVersion": null
+            }
+        }
+    ]
+}
