@@ -294,7 +294,7 @@ Event
 ## Limitations
 
 - These are Atomic Red Team tests on one lab VM. They show the rules can see the behaviour, but not how they'd cope with real attackers or real noise.
-- Some rules fired more than once for a single test. The scheduled task rule made four incidents. I haven't worked out why. My guess is the rule looks back further than it runs, but I didn't check.
+- Some rules fired more than once for a single test. When I exported the rules in part 2, I could see they run every 5 minutes and look back 10 minutes, so each event falls inside two runs. That is most likely why one test made several incidents. Incident grouping is turned off on the rules, so nothing merges the duplicates yet. Together with the tests I ran more than once, this probably explains the high counts in part 2: 23 incidents for the command shell rule and 18 for the local account rule. The command shell rule only matches my own test file name, so these aren't normal `cmd.exe` activity.
 - The rules match on text. The T1087.001 rule looks for `net user`, so a renamed or obfuscated command would get past it. The T1059.003 rule only matches the file name of my test, so it finds my test and not scripts in general.
 - A lot of these commands are normal admin activity, so in a real environment the rules would need tuning to cut false positives.
 - The log clearing rule looks for the `wevtutil` process, not the cleared log itself, because I don't collect the System log.
