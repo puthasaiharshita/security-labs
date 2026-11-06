@@ -13,8 +13,8 @@ I'm working toward a SOC analyst role. My labs are where I build hands-on defens
 
 | Category | Tools / Areas |
 |---|---|
-| SOC / Detection | Splunk (SPL), Microsoft Sentinel (KQL), Windows Event Viewer, Active Directory, Event Log Analysis, Audit Policy Configuration, MITRE ATT&CK mapping, Sysmon, Atomic Red Team, Detection Engineering |
-| Cloud | Azure Arc, Azure Monitor Agent, Microsoft Sentinel, Data Collection Rules, Azure VMs, Network Security Groups, Data Collection Rules
+| SOC / Detection | Splunk (SPL), Microsoft Sentinel (KQL), Windows Event Viewer, Active Directory, Event Log Analysis, Audit Policy Configuration, MITRE ATT&CK mapping, ATT&CK Navigator, Sysmon, Atomic Red Team, Detection Engineering |
+| Cloud | Azure Arc, Azure Monitor Agent, Microsoft Sentinel, Data Collection Rules, Azure VMs, Network Security Groups
 | Networking | Static IPs, DNS and isolated lab networks (VirtualBox) |
 | Automation / Scripting | Python (file handling, regex, log parsing, REST APIs with requests), Git/GitHub |
 | OS | Windows Server 2022 and 2025, Windows 11 |
@@ -28,11 +28,11 @@ I'm working toward a SOC analyst role. My labs are where I build hands-on defens
 - [IOC Enrichment Tool: VirusTotal and AbuseIPDB Lookups](https://github.com/puthasaiharshita/ioc-enrichment-tool)
 - [Hunting Encoded PowerShell with Microsoft Sentinel (KQL, T1059.001)](soc-portfolio/kql-encoded-powershell/README.md)
 - [Getting Windows Logs into Microsoft Sentinel and Finding Failed Logons (KQL)](soc-portfolio/sentinel-windows-security-lab/README.md)
-- [Simulating Six Attacker Techniques and Detecting Them in Microsoft Sentinel (KQL)](soc-portfolio/sentinel-attack-simulation/README.md)
+- [Simulating Attacker Techniques, Detecting Them in Microsoft Sentinel and Fixing the Gaps (KQL)](soc-portfolio/sentinel-attack-simulation/README.md)
 
 ## Currently Learning / Next Steps
 
-- Building an ATT&CK coverage map for my Sentinel detections and filling the gaps
+- Converting my Sentinel rules to Sigma with automated validation in GitHub Actions (detection-as-code)
 - Building more SOC detection write-ups (next: phishing analysis and incident response playbooks)
 
 ## Structure
