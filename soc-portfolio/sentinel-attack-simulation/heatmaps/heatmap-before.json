@@ -1,0 +1,31 @@
+{
+  "name": "Project 3 - BEFORE gap fixes",
+  "versions": { "layer": "4.5", "navigator": "5.1.0" },
+  "domain": "enterprise-attack",
+  "description": "Sentinel lab detection coverage before gap analysis. Green = detected, Yellow = partial, Red = missed.",
+  "layout": { "layout": "side", "showID": true, "showName": true },
+  "hideDisabled": false,
+  "techniques": [
+    { "techniqueID": "T1547", "showSubtechniques": true },
+    { "techniqueID": "T1059", "showSubtechniques": true },
+    { "techniqueID": "T1087", "showSubtechniques": true },
+    { "techniqueID": "T1053", "showSubtechniques": true },
+    { "techniqueID": "T1136", "showSubtechniques": true },
+    { "techniqueID": "T1685", "showSubtechniques": true },
+    { "techniqueID": "T1110", "showSubtechniques": true },
+    { "techniqueID": "T1547.001", "color": "#31a354", "comment": "Detected: Registry Run key rule" },
+    { "techniqueID": "T1059.003", "color": "#31a354", "comment": "Detected: Windows command shell rule" },
+    { "techniqueID": "T1087.001", "color": "#31a354", "comment": "Detected: Local account discovery rule" },
+    { "techniqueID": "T1053.005", "color": "#31a354", "comment": "Detected: Scheduled task created rule" },
+    { "techniqueID": "T1136.001", "color": "#31a354", "comment": "Detected: Local account created rule" },
+    { "techniqueID": "T1685.005", "color": "#fdae61", "comment": "PARTIAL (T1685.005 in ATT&CK v19, was T1070.001): rule only matched 'wevtutil cl System'; Clear-EventLog was missed (Gap 1)" },
+    { "techniqueID": "T1110.001", "color": "#de2d26", "comment": "MISSED: no rule for repeated failed logons (Gap 2)" }
+  ],
+  "legendItems": [
+    { "label": "Detected", "color": "#31a354" },
+    { "label": "Partial", "color": "#fdae61" },
+    { "label": "Missed", "color": "#de2d26" }
+  ],
+  "showTacticRowBackground": false,
+  "selectSubtechniquesWithParent": false
+}

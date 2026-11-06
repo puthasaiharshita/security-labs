@@ -1,0 +1,30 @@
+{
+  "name": "Project 3 - AFTER gap fixes",
+  "versions": { "layer": "4.5", "navigator": "5.1.0" },
+  "domain": "enterprise-attack",
+  "description": "Sentinel lab detection coverage after fixing 2 gaps. Blue = fixed in gap analysis, Green = detected from the start.",
+  "layout": { "layout": "side", "showID": true, "showName": true },
+  "hideDisabled": false,
+  "techniques": [
+    { "techniqueID": "T1547", "showSubtechniques": true },
+    { "techniqueID": "T1059", "showSubtechniques": true },
+    { "techniqueID": "T1087", "showSubtechniques": true },
+    { "techniqueID": "T1053", "showSubtechniques": true },
+    { "techniqueID": "T1136", "showSubtechniques": true },
+    { "techniqueID": "T1685", "showSubtechniques": true },
+    { "techniqueID": "T1110", "showSubtechniques": true },
+    { "techniqueID": "T1547.001", "color": "#31a354", "comment": "Detected: Registry Run key rule" },
+    { "techniqueID": "T1059.003", "color": "#31a354", "comment": "Detected: Windows command shell rule" },
+    { "techniqueID": "T1087.001", "color": "#31a354", "comment": "Detected: Local account discovery rule" },
+    { "techniqueID": "T1053.005", "color": "#31a354", "comment": "Detected: Scheduled task created rule" },
+    { "techniqueID": "T1136.001", "color": "#31a354", "comment": "Detected: Local account created rule" },
+    { "techniqueID": "T1685.005", "color": "#3182bd", "comment": "FIXED (T1685.005 in ATT&CK v19, was T1070.001): rule now uses EventID 1102 + Sysmon (Clear-EventLog, wevtutil). Re-test created High incident." },
+    { "techniqueID": "T1110.001", "color": "#3182bd", "comment": "FIXED: new rule, 5+ failed logons (4625) per host/account/IP in 10 min. Re-test created incident." }
+  ],
+  "legendItems": [
+    { "label": "Detected", "color": "#31a354" },
+    { "label": "Fixed in gap analysis", "color": "#3182bd" }
+  ],
+  "showTacticRowBackground": false,
+  "selectSubtechniquesWithParent": false
+}
