@@ -1,8 +1,10 @@
-# Simulating Six Attacker Techniques and Detecting Them in Microsoft Sentinel (KQL)
+# Simulating Attacker Techniques, Detecting Them in Microsoft Sentinel and Fixing the Gaps (KQL)
 
 My first two Sentinel labs each tested one thing. In [kql-encoded-powershell](../kql-encoded-powershell) I hunted for encoded PowerShell, and in [sentinel-windows-security-lab](../sentinel-windows-security-lab) I only got Windows logs into Sentinel. This time I wanted to try more than one behaviour, so I ran six techniques against my own Azure VM with Atomic Red Team and wrote a Sentinel analytics rule for each one.
 
 It didn't all go smoothly. Most of the work was getting the right logs into Sentinel in the first place, so this write-up covers that as well as the rules.
+
+In [part 2](#part-2-testing-the-rules-and-fixing-the-gaps) I went back and tried to get past my own rules. One of them missed a different way of clearing the logs, and nothing at all covered password guessing. I fixed both, re-tested them until they raised incidents, and mapped the before and after on an ATT&CK Navigator heatmap.
 
 ## Lab environment
 
@@ -70,7 +72,7 @@ Then I checked that every table was getting data before running any attack.
 | T1136.001 Create Account: Local Account | Persistence | Security 4720 | Medium |
 | T1053.005 Scheduled Task | Persistence | Security 4698 | Medium |
 | T1547.001 Registry Run Keys | Persistence | Sysmon 13 | Medium |
-| T1685.005 Clear Windows Event Logs (was T1070.001) | Defense Evasion | Sysmon 1 | Medium |
+| T1685.005 Clear Windows Event Logs (was T1070.001) | Defense Impairment (was Defense Evasion) | Sysmon 1 | Medium |
 | T1087.001 Account Discovery: Local | Discovery | Sysmon 1 | Medium |
 | T1059.003 Windows Command Shell | Execution | Sysmon 1 | Low |
 
@@ -279,9 +281,170 @@ Event
 | Persistence | T1136.001 Create Account: Local Account | Security 4720 |
 | Persistence | T1053.005 Scheduled Task | Security 4698 |
 | Persistence | T1547.001 Registry Run Keys | Sysmon 13 |
-| Defense Evasion | T1685.005 Clear Windows Event Logs | Sysmon 1, `wevtutil cl` |
+| Defense Impairment (was Defense Evasion) | T1685.005 Clear Windows Event Logs | Sysmon 1, `wevtutil cl` |
 | Discovery | T1087.001 Local Account Discovery | Sysmon 1, `net user` and similar |
 | Execution | T1059.003 Windows Command Shell | Sysmon 1, batch file |
+
+## Part 2: testing the rules and fixing the gaps
+
+Each of the six rules had only been tested against the one Atomic command I wrote it for. So I went back and tried to get past them, and checked which techniques I still had no rule for at all.
+
+### Gap 1: clearing the logs a different way (T1685.005)
+
+My log clearing rule only matched a command line containing both `wevtutil` and `cl System`. This time I cleared the logs with PowerShell instead:
+
+```powershell
+Clear-EventLog -LogName Security
+```
+
+No alert fired. When I searched the logs, both pieces of evidence were already in Sentinel. Sysmon Event 1 had the PowerShell process running `Clear-EventLog` at 12:21:05 UTC on 5 Nov, and Windows had written Security EventID 1102 ("the audit log was cleared") in the same second. My rule just wasn't looking for either of them.
+
+<p align="center">
+<kbd><kbd><img src="screenshots/41-gap-clear-eventlog-sysmon.png"></kbd></kbd><br>
+<em>Sysmon recorded the <code>Clear-EventLog</code> command that my rule missed.</em>
+</p>
+<br>
+
+<p align="center">
+<kbd><kbd><img src="screenshots/41b-gap-clear-eventlog-1102.png"></kbd></kbd><br>
+<em>Windows logged EventID 1102 in the same second. The Account column is empty for this event.</em>
+</p>
+<br>
+
+I rewrote the rule to look for two things. EventID 1102 is written whatever tool clears the Security log, so it catches the result. The Sysmon branch still catches the commands, which also covers the System log I don't collect.
+
+```kql
+let A = SecurityEvent
+| where EventID == 1102
+| project TimeGenerated, Computer, Hit = "1102 log cleared", Details = Activity;
+let B = Event
+| where Source == "Microsoft-Windows-Sysmon" and EventID == 1
+| where RenderedDescription contains "Clear-EventLog" or RenderedDescription contains "wevtutil"
+| project TimeGenerated, Computer, Hit = "Sysmon command", Details = RenderedDescription;
+union A, B
+```
+
+My first try at this query still missed the PowerShell event. I'd put `Clear-EventLog` inside the brackets after `and wevtutil`, so it only matched lines containing both. Moving it out fixed it, and the query returned the 1102 row, the `Clear-EventLog` row and my older `wevtutil` test.
+
+<p align="center">
+<kbd><kbd><img src="screenshots/42b-upgraded-query-test.png"></kbd></kbd><br>
+<em>The new query finding both clearing methods.</em>
+</p>
+<br>
+
+I put the new query into the existing rule, raised its severity from Medium to High and mapped the host entity. The old and new versions are exported in [`rules/`](rules) so you can compare them.
+
+<p align="center">
+<kbd><kbd><img src="screenshots/43-rule-t1070-001-after.png"></kbd></kbd><br>
+<em>The updated rule, now High severity, alongside the other five.</em>
+</p>
+<br>
+
+Then I started the VM and cleared the Security log again.
+
+<p align="center">
+<kbd><kbd><img src="screenshots/44-test-clear-eventlog-vm.png"></kbd></kbd><br>
+<em>Running <code>Clear-EventLog</code> again on <code>vm-win-lab</code>.</em>
+</p>
+<br>
+
+<p align="center">
+<kbd><kbd><img src="screenshots/45-incident-t1070-001-fired.png"></kbd></kbd><br>
+<em>This time the rule fired. One test made two High severity incidents (43 and 46), which fits the lookback overlap described under Limitations.</em>
+</p>
+<br>
+
+### Gap 2: nothing covered password guessing (T1110.001)
+
+None of my six rules looked at failed logons. I simulated 10 wrong passwords against a made-up user, which took 19 seconds:
+
+```powershell
+1..10 | ForEach-Object { net use \\127.0.0.1\IPC$ /user:testuser WrongPass$_ 2>$null }
+```
+
+<p align="center">
+<kbd><kbd><img src="screenshots/46-test-password-guessing-vm.png"></kbd></kbd><br>
+<em>The loop prints nothing because <code>2>$null</code> hides the error messages. The failures show up in the Security log instead. The <code>Clear-EventLog</code> line above it is from the gap 1 re-test.</em>
+</p>
+<br>
+
+Each failure is EventID 4625. The rule counts them per host, account and source IP, and alerts at 5 or more inside its 10-minute window.
+
+```kql
+SecurityEvent
+| where EventID == 4625
+| summarize FailedAttempts = count(), FirstSeen = min(TimeGenerated), LastSeen = max(TimeGenerated) by Computer, TargetAccount, IpAddress
+| where FailedAttempts >= 5
+```
+
+<p align="center">
+<kbd><kbd><img src="screenshots/47-password-guessing-query-test.png"></kbd></kbd><br>
+<em>Ten failures for <code>testuser</code> from 127.0.0.1 between 12:32:08 and 12:32:27 IST.</em>
+</p>
+<br>
+
+The rule maps the host, account and IP as entities and has Medium severity. Saving it took a few tries. Validation kept failing on the rule logic page with no clear error, so I saved it without entities first and then added them back one at a time. That worked.
+
+<p align="center">
+<kbd><kbd><img src="screenshots/48-rule-t1110-001-created.png"></kbd></kbd><br>
+<em>Seven active rules, with the new password guessing rule at the top.</em>
+</p>
+<br>
+
+I ran the same simulation again and the rule made an incident.
+
+<p align="center">
+<kbd><kbd><img src="screenshots/49-incident-t1110-001-fired.png"></kbd></kbd><br>
+<em>The password guessing incident (59), with <code>vm-win-lab</code> and <code>testuser</code> mapped as entities.</em>
+</p>
+<br>
+
+### Checking every rule had really fired
+
+A rule being in the list doesn't prove it works, so before colouring the heatmap I checked the incidents table for all seven rules.
+
+```kql
+SecurityIncident
+| where TimeGenerated > ago(7d)
+| summarize Incidents = dcount(IncidentNumber), LastFired = max(TimeGenerated) by Title
+| sort by Title asc
+```
+
+| Rule | Incidents in 7 days |
+|---|---|
+| T1059.003 Windows command shell | 23 |
+| T1136.001 Local account created | 18 |
+| T1053.005 Scheduled task created | 7 |
+| T1070.001 Windows event log cleared | 6 |
+| T1087.001 Local account discovery | 2 |
+| T1110.001 Password guessing | 2 |
+| T1547.001 Registry run key | 2 |
+
+<p align="center">
+<kbd><kbd><img src="screenshots/52-rules-fired-proof.png"></kbd></kbd><br>
+<em>All seven rules have made at least one incident.</em>
+</p>
+<br>
+
+Some counts are much higher than the number of tests I ran. I explain why under Limitations.
+
+### Heatmap before and after
+
+I mapped the results in ATT&CK Navigator, on ATT&CK v20. Green is detected, yellow is partial, red is missed and blue is fixed in this part. The layer files are in [`heatmaps/`](heatmaps), and hovering over a cell shows which log source it relies on.
+
+ATT&CK v19 split Defense Evasion into Stealth and Defense Impairment, which is why log clearing now sits under Defense Impairment as T1685.005. My Sentinel rule is still named T1070.001.
+
+<p align="center">
+<kbd><kbd><img src="screenshots/50-heatmap-before.png"></kbd></kbd><br>
+<em>Before: five detected, log clearing partial, password guessing missed.</em>
+</p>
+<br>
+
+<p align="center">
+<kbd><kbd><img src="screenshots/51-heatmap-after.png"></kbd></kbd><br>
+<em>After: both gaps fixed and re-tested.</em>
+</p>
+<br>
 
 ## If this were real
 
@@ -297,7 +460,11 @@ Event
 - Some rules fired more than once for a single test. When I exported the rules in part 2, I could see they run every 5 minutes and look back 10 minutes, so each event falls inside two runs. That is most likely why one test made several incidents. Incident grouping is turned off on the rules, so nothing merges the duplicates yet. Together with the tests I ran more than once, this probably explains the high counts in part 2: 23 incidents for the command shell rule and 18 for the local account rule. The command shell rule only matches my own test file name, so these aren't normal `cmd.exe` activity.
 - The rules match on text. The T1087.001 rule looks for `net user`, so a renamed or obfuscated command would get past it. The T1059.003 rule only matches the file name of my test, so it finds my test and not scripts in general.
 - A lot of these commands are normal admin activity, so in a real environment the rules would need tuning to cut false positives.
-- The log clearing rule looks for the `wevtutil` process, not the cleared log itself, because I don't collect the System log.
+- The fixed log clearing rule uses EventID 1102, which only covers the Security log. Clearing the System or Application log writes Event 104, which I still don't collect, so for those logs the rule depends on the Sysmon branch.
+- The Sysmon branch matches any `wevtutil` command, including harmless ones like `wevtutil qe`. It should be narrowed to `cl` and `clear-log`.
+- The password guessing threshold (5 failures in 10 minutes) is a lab number. I didn't tune it against normal traffic like service accounts or the lockout policy.
+- The scheduled task rule fired again on 6 Nov, a day I didn't create any task. That is probably Windows creating its own tasks, which is the kind of false positive the rule would need tuning for.
+- A green cell on the heatmap means my test was detected. It doesn't mean every variant of that technique is covered, which part 2 showed with `Clear-EventLog`.
 - A few run screenshots are cut off or don't show the clock. Where that happens, the query timestamps back them up.
 - The lab stops working when my Azure credits run out on 16 Nov 2026, so the screenshots and queries are the record.
 
@@ -307,7 +474,9 @@ Writing the rules was the quick part. What took time was making sure the right l
 
 I also found out that a rule alerting isn't the same as a rule being good. A few of mine fired several times for one test, and the command shell one only matches my own test file, so I wouldn't call that one finished.
 
-If I did this again, I'd work out which log each technique writes to before starting, turn on auditing and Sysmon first, and write down each rule's schedule and lookback as I go.
+Part 2 showed me the opposite problem. For the log clearing gap, the log was there the whole time. Sysmon had the `Clear-EventLog` command and Windows had written a 1102 in the same second, but my rule only looked for one specific command. Matching on the result (the log was cleared) holds up better than matching on the tool. I also found that small KQL mistakes fail without any error. One misplaced bracket made my fixed query miss the event again.
+
+If I did this again, I'd work out which log each technique writes to before starting, turn on auditing and Sysmon first, and write down each rule's schedule and lookback as I go. I'd also try a second method for every technique before calling a rule done.
 
 ## Repo contents
 
@@ -320,6 +489,15 @@ sentinel-attack-simulation/
 │   ├── 03_t1547_001_registry_run_key.kql
 │   ├── 04_t1685_005_event_log_cleared.kql
 │   ├── 05_t1087_001_account_discovery.kql
-│   └── 06_t1059_003_command_shell_script.kql
-└── screenshots/   (34 images)
+│   ├── 06_t1059_003_command_shell_script.kql
+│   ├── 07_t1685_005_event_log_cleared_fixed.kql
+│   └── 08_t1110_001_password_guessing.kql
+├── rules/        (Sentinel rule exports)
+│   ├── rule-t1070-001-BEFORE.json
+│   ├── rule-t1070-001-AFTER.json
+│   └── rule-t1110-001.json
+├── heatmaps/     (ATT&CK Navigator layers)
+│   ├── heatmap-before.json
+│   └── heatmap-after.json
+└── screenshots/  (part 1: 01–34, part 2: 41–52)
 ```
