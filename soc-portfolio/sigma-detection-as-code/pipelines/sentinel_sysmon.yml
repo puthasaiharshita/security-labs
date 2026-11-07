@@ -1,0 +1,31 @@
+name: Sentinel Sysmon via SysmonParsed parser
+priority: 5
+transformations:
+  - id: sysmon_table
+    type: set_state
+    key: query_table
+    val: SysmonParsed
+    rule_conditions:
+      - type: logsource
+        product: windows
+        category: registry_set
+      - type: logsource
+        product: windows
+        category: process_creation
+    rule_cond_op: or
+  - id: sysmon_registry_set_eventid
+    type: add_condition
+    conditions:
+      EventID: 13
+    rule_conditions:
+      - type: logsource
+        product: windows
+        category: registry_set
+  - id: sysmon_process_creation_eventid
+    type: add_condition
+    conditions:
+      EventID: 1
+    rule_conditions:
+      - type: logsource
+        product: windows
+        category: process_creation

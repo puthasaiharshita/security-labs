@@ -1,0 +1,2 @@
+SysmonParsed
+| where EventID == 13 and (TargetObject contains "\\Software\\Microsoft\\Windows\\CurrentVersion\\Run" and (not((Image =~ "C:\\Windows\\System32\\userinit.exe" and Details =~ "ctfmon.exe /n"))))

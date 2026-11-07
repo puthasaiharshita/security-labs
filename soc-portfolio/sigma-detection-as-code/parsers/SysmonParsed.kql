@@ -1,0 +1,14 @@
+// Function name: SysmonParsed   (save in Sentinel > Logs > Save as function, category: Parsers)
+// Purpose: Sysmon logs land in the generic Event table. Fields are extracted from the
+// structured EventData XML (more reliable than RenderedDescription, which runs fields together).
+// Limitation: XML-encoded characters remain encoded (e.g. & appears as &amp;).
+Event
+| where Source == "Microsoft-Windows-Sysmon"
+| extend Image             = extract(@'<Data Name="Image">([^<]*)</Data>', 1, EventData)
+| extend TargetObject      = extract(@'<Data Name="TargetObject">([^<]*)</Data>', 1, EventData)
+| extend Details           = extract(@'<Data Name="Details">([^<]*)</Data>', 1, EventData)
+| extend EventType         = extract(@'<Data Name="EventType">([^<]*)</Data>', 1, EventData)
+| extend CommandLine       = extract(@'<Data Name="CommandLine">([^<]*)</Data>', 1, EventData)
+| extend ParentImage       = extract(@'<Data Name="ParentImage">([^<]*)</Data>', 1, EventData)
+| extend ParentCommandLine = extract(@'<Data Name="ParentCommandLine">([^<]*)</Data>', 1, EventData)
+| extend User              = extract(@'<Data Name="User">([^<]*)</Data>', 1, EventData)

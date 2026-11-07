@@ -1,0 +1,23 @@
+title: Registry Run Key Modified
+id: a1b6fecf-f40a-4bff-9606-18bdb67c4cc0
+status: test
+description: Detects a value being set under a Run or RunOnce registry key (Sysmon EventID 13). Programs listed there start automatically at logon, a common persistence method.
+author: Putha Sai Harshita
+date: 2026-11-07
+tags:
+    - attack.persistence
+    - attack.t1547.001
+logsource:
+    product: windows
+    category: registry_set
+detection:
+    selection:
+        TargetObject|contains: '\Software\Microsoft\Windows\CurrentVersion\Run'
+    filter_windows_ctfmon:
+        Image: 'C:\Windows\System32\userinit.exe'
+        Details: 'ctfmon.exe /n'
+    condition: selection and not filter_windows_ctfmon
+falsepositives:
+    - Legitimate software adding itself to startup during install (e.g. OneDrive, Teams, security agents)
+    - Windows userinit.exe writing 'ctfmon.exe /n' to RunOnce at logon (filtered; 2 events in 14 days of lab data)
+level: medium
