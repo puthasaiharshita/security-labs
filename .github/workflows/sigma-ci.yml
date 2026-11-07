@@ -1,0 +1,53 @@
+name: Sigma detection CI
+
+on:
+  push:
+    paths:
+      - 'soc-portfolio/sigma-detection-as-code/**'
+      - '.github/workflows/sigma-ci.yml'
+  pull_request:
+    paths:
+      - 'soc-portfolio/sigma-detection-as-code/**'
+  workflow_dispatch:
+
+jobs:
+  validate-and-convert:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: soc-portfolio/sigma-detection-as-code
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pinned Sigma tools
+        run: pip install -r requirements.txt
+
+      - name: Validate rules (fail on any error or issue)
+        run: sigma check --fail-on-error --fail-on-issues rules/
+
+      - name: Convert rules to KQL and SPL
+        run: |
+          mkdir -p build/kql build/spl
+          for f in rules/*.yml; do
+            n=$(basename "$f" .yml)
+            sigma convert -t kusto -p pipelines/sentinel_securityevent.yml -p pipelines/sentinel_sysmon.yml -p azure_monitor "$f" -o "build/kql/$n.kql"
+            sigma convert -t splunk -p sysmon -p splunk_windows "$f" -o "build/spl/$n.spl"
+          done
+
+      - name: Check committed queries match the rules
+        run: |
+          diff -r --strip-trailing-cr build/kql converted/kql
+          diff -r --strip-trailing-cr build/spl converted/spl
+
+      - name: Upload converted queries
+        uses: actions/upload-artifact@v4
+        with:
+          name: converted-queries
+          path: soc-portfolio/sigma-detection-as-code/build/

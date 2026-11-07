@@ -1,0 +1,1 @@
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=1 Image="*\\cmd.exe" CommandLine IN ("*.bat*", "*.cmd*") NOT (ParentImage="*\\svchost.exe" CommandLine="*C:\\Windows\\System32\\*")

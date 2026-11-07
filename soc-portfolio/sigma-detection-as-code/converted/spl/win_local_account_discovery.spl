@@ -1,0 +1,1 @@
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=1 (Image IN ("*\\net.exe", "*\\net1.exe") CommandLine IN ("* user*", "* localgroup*")) OR (Image="*\\cmdkey.exe" CommandLine="*/l*") OR CommandLine IN ("*Get-LocalUser*", "*Get-LocalGroupMember*") NOT (Image="*\\net1.exe" ParentImage="*\\net.exe")

@@ -1,0 +1,1 @@
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=13 TargetObject="*\\Software\\Microsoft\\Windows\\CurrentVersion\\Run*" NOT (Image="C:\\Windows\\System32\\userinit.exe" Details="ctfmon.exe /n")

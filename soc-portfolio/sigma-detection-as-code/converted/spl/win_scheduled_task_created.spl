@@ -1,0 +1,1 @@
+source="WinEventLog:Security" EventCode=4698 NOT (TaskName="\\Microsoft\\Windows\\Windows Defender\\Windows Defender Scheduled Scan" SubjectUserSid="S-1-5-18")
