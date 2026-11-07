@@ -1,0 +1,10 @@
+name: Sentinel SecurityEvent table
+priority: 5
+transformations:
+  - id: securityevent_table
+    type: set_state
+    key: query_table
+    val: SecurityEvent
+    rule_conditions:
+      - type: logsource
+        service: security

@@ -1,0 +1,20 @@
+title: Windows Security Event Log Cleared
+id: 57ded9e0-92ea-4363-8927-500b2b1a3055
+status: test
+description: Detects the Windows Security event log being cleared (EventID 1102), regardless of which tool cleared it. Written after Project 3 Gap 1, where a wevtutil-only rule missed Clear-EventLog.
+author: Putha Sai Harshita
+date: 2026-11-07
+tags:
+    - attack.defense-impairment
+    - attack.t1685.005
+    # Formerly attack.t1070.001 (Defense Evasion) before ATT&CK v19
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        EventID: 1102
+    condition: selection
+falsepositives:
+    - Administrators clearing logs on purpose (rare; check against change tickets)
+level: high

@@ -1,0 +1,19 @@
+title: Local User Account Created
+id: f0a62fee-7523-4ef9-8cbb-c7fde6890b87
+status: test
+description: Detects creation of a new local user account (EventID 4720). Attackers create local accounts to keep access to a machine (persistence).
+author: Putha Sai Harshita
+date: 2026-11-07
+tags:
+    - attack.persistence
+    - attack.t1136.001
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        EventID: 4720
+    condition: selection
+falsepositives:
+    - IT staff creating accounts for new employees or service accounts
+level: medium
