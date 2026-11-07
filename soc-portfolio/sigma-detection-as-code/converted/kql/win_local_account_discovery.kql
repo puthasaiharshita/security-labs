@@ -1,0 +1,2 @@
+SysmonParsed
+| where EventID == 1 and ((((Image endswith "\\net.exe" or Image endswith "\\net1.exe") and (CommandLine contains " user" or CommandLine contains " localgroup")) or (Image endswith "\\cmdkey.exe" and CommandLine contains "/l") or (CommandLine contains "Get-LocalUser" or CommandLine contains "Get-LocalGroupMember")) and (not((Image endswith "\\net1.exe" and ParentImage endswith "\\net.exe"))))

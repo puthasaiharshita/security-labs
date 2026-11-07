@@ -1,0 +1,36 @@
+title: Local Account Discovery
+id: aa364891-1df7-4f83-85f2-ddc119486626
+status: test
+description: Detects enumeration of local accounts and groups via net/net1, cmdkey /list, or PowerShell local account cmdlets (Sysmon EventID 1). Improves on the Project 3 rule, which searched the whole event text and missed net1.exe and PowerShell.
+author: Putha Sai Harshita
+date: 2026-11-07
+tags:
+    - attack.discovery
+    - attack.t1087.001
+logsource:
+    product: windows
+    category: process_creation
+detection:
+    selection_net_img:
+        Image|endswith:
+            - '\net.exe'
+            - '\net1.exe'
+    selection_net_cmd:
+        CommandLine|contains:
+            - ' user'
+            - ' localgroup'
+    selection_cmdkey:
+        Image|endswith: '\cmdkey.exe'
+        CommandLine|contains: '/l'
+    selection_powershell:
+        CommandLine|contains:
+            - 'Get-LocalUser'
+            - 'Get-LocalGroupMember'
+    filter_net1_child_of_net:
+        Image|endswith: '\net1.exe'
+        ParentImage|endswith: '\net.exe'
+    condition: ((selection_net_img and selection_net_cmd) or selection_cmdkey or selection_powershell) and not filter_net1_child_of_net
+falsepositives:
+    - Administrators and IT scripts checking accounts
+    - Duplicate net1.exe events from net.exe are filtered; net1.exe launched directly still alerts
+level: low
