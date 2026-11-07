@@ -1,0 +1,23 @@
+title: Scheduled Task Created (Excluding Defender Self-Update)
+id: ebb9ec86-f082-403e-8f9c-b71d4ff7d28a
+status: test
+description: Detects creation of a scheduled task (EventID 4698), a common persistence method. Excludes the Windows Defender Scheduled Scan task only when SYSTEM creates it; this was the false positive found in Project 3 (6 events over 5 days, all by S-1-5-18).
+author: Putha Sai Harshita
+date: 2026-11-07
+tags:
+    - attack.persistence
+    - attack.execution
+    - attack.t1053.005
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        EventID: 4698
+    filter_defender:
+        TaskName: '\Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan'
+        SubjectUserSid: 'S-1-5-18'
+    condition: selection and not filter_defender
+falsepositives:
+    - Software installers and updaters that create tasks under a user account
+level: medium

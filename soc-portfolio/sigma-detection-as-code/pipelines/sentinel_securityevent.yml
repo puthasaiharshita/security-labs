@@ -1,10 +1,10 @@
-name: Sentinel SecurityEvent table
+name: Sentinel SecurityEvent via SecurityEventParsed parser
 priority: 5
 transformations:
   - id: securityevent_table
     type: set_state
     key: query_table
-    val: SecurityEvent
+    val: SecurityEventParsed
     rule_conditions:
       - type: logsource
         service: security

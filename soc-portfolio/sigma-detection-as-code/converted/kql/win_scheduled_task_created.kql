@@ -1,0 +1,2 @@
+SecurityEventParsed
+| where EventID == 4698 and (not((TaskName =~ "\\Microsoft\\Windows\\Windows Defender\\Windows Defender Scheduled Scan" and SubjectUserSid =~ "S-1-5-18")))

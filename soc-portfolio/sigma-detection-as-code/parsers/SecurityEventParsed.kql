@@ -1,0 +1,7 @@
+// Function name: SecurityEventParsed   (save in Sentinel > Logs > Save as function, category: Parsers)
+// Purpose: SecurityEvent via AMA leaves some fields empty for events like 4698.
+// This extracts them from EventData so Sigma-converted rules can use normal field names.
+SecurityEvent
+| extend TaskName = extract(@'Name="TaskName">([^<]+)<', 1, EventData)
+| extend SubjectUserSid = iff(isempty(SubjectUserSid), extract(@'Name="SubjectUserSid">([^<]+)<', 1, EventData), SubjectUserSid)
+| extend SubjectUserName = iff(isempty(SubjectUserName), extract(@'Name="SubjectUserName">([^<]+)<', 1, EventData), SubjectUserName)

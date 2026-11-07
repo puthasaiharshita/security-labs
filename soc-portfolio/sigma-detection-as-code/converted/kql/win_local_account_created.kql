@@ -1,2 +1,2 @@
-SecurityEvent
+SecurityEventParsed
 | where EventID == 4720
