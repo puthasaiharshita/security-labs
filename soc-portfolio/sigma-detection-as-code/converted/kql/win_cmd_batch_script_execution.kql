@@ -1,0 +1,2 @@
+SysmonParsed
+| where EventID == 1 and (Image endswith "\\cmd.exe" and (CommandLine contains ".bat" or CommandLine contains ".cmd") and (not((ParentImage endswith "\\svchost.exe" and CommandLine contains "C:\\Windows\\System32\\"))))

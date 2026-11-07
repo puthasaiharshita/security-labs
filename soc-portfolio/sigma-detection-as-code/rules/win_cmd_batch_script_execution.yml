@@ -1,0 +1,27 @@
+title: Batch Script Executed via cmd.exe Outside Windows Service Context
+id: 0e8babea-9baa-42f4-b040-1dd11587fb8d
+status: test
+description: Detects cmd.exe running a .bat or .cmd script (Sysmon EventID 1), excluding Windows built-in scripts in System32 launched by svchost.exe. Replaces the Project 3 rule, which matched only the Atomic test's file name.
+author: Putha Sai Harshita
+date: 2026-11-07
+tags:
+    - attack.execution
+    - attack.t1059.003
+logsource:
+    product: windows
+    category: process_creation
+detection:
+    selection_cmd:
+        Image|endswith: '\cmd.exe'
+    selection_script:
+        CommandLine|contains:
+            - '.bat'
+            - '.cmd'
+    filter_windows_service_scripts:
+        ParentImage|endswith: '\svchost.exe'
+        CommandLine|contains: 'C:\Windows\System32\'
+    condition: selection_cmd and selection_script and not filter_windows_service_scripts
+falsepositives:
+    - Admin and IT scripts, software installers and login scripts
+    - Windows service scripts in System32 run by svchost.exe are filtered (silcollector.cmd, hpatchmonTask.cmd; 13 events in 14 days of lab data)
+level: low
