@@ -1,0 +1,12 @@
+// Analytics rule: NSG security rule created, changed or deleted
+// Schedule: every 15 min, lookback 30 min. Entities: Account=Caller, IP=CallerIpAddress, AzureResource=_ResourceId
+// Limitation: AzureActivity does not log the rule contents (port/source); analyst must review the rule.
+AzureActivity
+| where OperationNameValue in~ (
+    "MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/SECURITYRULES/WRITE",
+    "MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/SECURITYRULES/DELETE")
+| where ActivityStatusValue in~ ("Success", "Succeeded")
+| extend Action = iff(OperationNameValue endswith "DELETE", "Deleted", "Created/Changed"),
+         RuleName = tostring(split(_ResourceId, "/")[-1]),
+         NSG = tostring(split(_ResourceId, "/")[-3])
+| project TimeGenerated, Action, NSG, RuleName, Caller, CallerIpAddress, ResourceGroup, _ResourceId

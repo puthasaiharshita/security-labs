@@ -1,0 +1,6 @@
+// Triage pivot: alert output lacked the actor, so check the raw 4698 event around the alert time (UTC)
+SecurityEventParsed
+| where TimeGenerated between (datetime(2026-11-03 06:38) .. datetime(2026-11-03 06:48))
+| where EventID == 4698
+| extend IsMachineAccount = SubjectUserName endswith "$"
+| project TimeGenerated, SubjectUserName, IsMachineAccount, TaskName

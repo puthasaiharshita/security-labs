@@ -1,0 +1,9 @@
+// Analytics rule (tuned): T1053.005 Scheduled task created
+// Drops only the proven-noisy pattern: machine account AND Microsoft's own task folder.
+// Schedule: every 5 min, lookback 10 min; alert grouping on (all entities, 1 h) to stop duplicates.
+// Entities: Host=Computer, Account Name=SubjectUserName, Account Sid=SubjectUserSid
+// Blind spot: SYSTEM-level task masquerading under \Microsoft\Windows\ (T1036) is still filtered.
+SecurityEventParsed
+| where EventID == 4698
+| where not(SubjectUserName endswith "$" and TaskName startswith @"\Microsoft\Windows\")
+| project TimeGenerated, Computer, SubjectUserName, SubjectUserSid, TaskName

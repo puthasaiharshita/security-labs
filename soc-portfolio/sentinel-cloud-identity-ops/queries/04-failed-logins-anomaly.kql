@@ -1,0 +1,11 @@
+// Spike detection: flags hours far above the learned baseline (sensitivity 2.5)
+// Limitation: 7 days of one quiet lab VM gives a near-zero baseline, so any burst is flagged.
+SecurityEvent
+| where EventID == 4625
+| make-series Failures = count() default = 0
+    on TimeGenerated from bin(ago(7d), 1h) to now() step 1h by Computer
+| extend (Anomalies, Score, Baseline) = series_decompose_anomalies(Failures, 2.5)
+| mv-expand TimeGenerated to typeof(datetime), Failures to typeof(long),
+            Anomalies to typeof(int), Score to typeof(double), Baseline to typeof(double)
+| where Anomalies == 1
+| project TimeGenerated, Computer, Failures, Baseline = round(Baseline, 1), Score = round(Score, 1)

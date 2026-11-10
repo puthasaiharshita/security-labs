@@ -1,0 +1,22 @@
+// Impossible travel, tested on synthetic sign-ins (tenant is Entra ID Free, so no SigninLogs).
+// For real data, replace the datatable with SigninLogs | where ResultType == "0"
+// and take Lat/Lon from LocationDetails.geoCoordinates.
+let SampleSignins = datatable(TimeGenerated:datetime, UserPrincipalName:string, IPAddress:string, City:string, Lat:real, Lon:real)
+[
+  datetime(2026-11-08 06:00), "alice@lab.test", "203.0.113.10", "Hyderabad", 17.385, 78.4867,
+  datetime(2026-11-08 06:40), "alice@lab.test", "198.51.100.7", "Frankfurt", 50.1109, 8.6821,
+  datetime(2026-11-08 06:00), "bob@lab.test",   "203.0.113.20", "Hyderabad", 17.385, 78.4867,
+  datetime(2026-11-08 09:00), "bob@lab.test",   "203.0.113.21", "Bengaluru", 12.9716, 77.5946,
+  datetime(2026-11-08 08:00), "carol@lab.test", "203.0.113.30", "Mumbai",    19.076, 72.8777,
+  datetime(2026-11-08 09:00), "carol@lab.test", "192.0.2.55",   "Singapore", 1.3521, 103.8198
+];
+SampleSignins
+| sort by UserPrincipalName asc, TimeGenerated asc
+| extend PrevUser = prev(UserPrincipalName), PrevTime = prev(TimeGenerated),
+         PrevCity = prev(City), PrevLat = prev(Lat), PrevLon = prev(Lon)
+| where UserPrincipalName == PrevUser
+| extend DistanceKm = round(geo_distance_2points(PrevLon, PrevLat, Lon, Lat) / 1000, 0),
+         Hours = round(max_of((TimeGenerated - PrevTime) / 1h, 0.01), 2)
+| extend SpeedKmh = round(DistanceKm / Hours, 0)
+| where SpeedKmh > 900
+| project UserPrincipalName, PrevCity, City, PrevTime, TimeGenerated, DistanceKm, Hours, SpeedKmh

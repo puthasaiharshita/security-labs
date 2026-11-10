@@ -1,0 +1,7 @@
+// All scheduled-task creations (4698) grouped by who created them and the task name
+SecurityEventParsed
+| where TimeGenerated > ago(14d)
+| where EventID == 4698
+| summarize Count = count(), First = min(TimeGenerated), Last = max(TimeGenerated)
+          by SubjectUserName, TaskName
+| order by SubjectUserName asc

@@ -1,0 +1,4 @@
+// Confirm Azure Activity logs are arriving, grouped by category
+AzureActivity
+| where TimeGenerated > ago(24h)
+| summarize Events = count(), Latest = max(TimeGenerated) by CategoryValue

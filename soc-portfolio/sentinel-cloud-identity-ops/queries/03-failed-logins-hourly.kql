@@ -1,0 +1,9 @@
+// Failed logons (4625) per hour. Accounts=1 with many failures -> brute force; many accounts -> password spraying
+SecurityEvent
+| where TimeGenerated > ago(7d)
+| where EventID == 4625
+| summarize Failures = count(),
+            Accounts = dcount(TargetAccount),
+            SourceIPs = make_set(IpAddress, 5)
+          by bin(TimeGenerated, 1h), Computer
+| order by TimeGenerated desc
