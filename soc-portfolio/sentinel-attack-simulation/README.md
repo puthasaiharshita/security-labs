@@ -205,7 +205,7 @@ Event
 
 ## T1087.001: local account discovery
 
-Atomic test 8 runs a few enumeration commands in a row: `net user`, `net localgroup`, `cmdkey /list` and `dir c:\Users\`. Each one shows up as a process creation event in Sysmon.
+Atomic test 8 runs a few enumeration commands in a row: net user, net localgroup, cmdkey /list and dir c:\Users\. Each command except dir shows up as its own process creation event in Sysmon. dir is built into cmd.exe, so it only appears inside the parent cmd.exe command line.
 
 ```kql
 Event
@@ -222,7 +222,7 @@ Event
 <br>
 <p align="center">
 <kbd><kbd><img src="screenshots/28-t1087-001-query-sysmon.png"></kbd></kbd><br>
-<em>Each command from the test showing as its own Sysmon event, plus the parent <code>cmd.exe</code> line. I blacked out the username and folder part of each line.</em>
+<em>Each command from the test showing as its own Sysmon event, plus the parent cmd.exe line, which is the only place dir appears. I blacked out the username and folder part of each line.</em>
 </p>
 <br>
 
