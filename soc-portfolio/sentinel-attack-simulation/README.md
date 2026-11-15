@@ -49,7 +49,7 @@ Then I checked that every table was getting data before running any attack.
 
 **Sysmon wasn't in Sentinel.** I had only collected the Security log, so I added the second collection rule shown above.
 
-**T1070.001 doesn't exist anymore.** I planned to test clearing event logs as T1070.001, but there was no Atomic folder for it. MITRE renumbered it to T1685.005 and Atomic Red Team follows the new ID. My Sentinel rule still has the old tag on it.
+**T1070.001 doesn't exist anymore.** I planned to test clearing event logs as T1070.001, but there was no Atomic folder for it. MITRE renumbered it to T1685.005 and Atomic Red Team follows the new ID. The Sentinel rule keeps its original T1070.001 name because the lab was deleted before ATT&CK v19 IDs were applied. The current ID is T1685.005.
 
 <p align="center">
 <kbd><kbd><img src="screenshots/06-atomic-techniques-check.png"></kbd></kbd><br>
@@ -126,7 +126,7 @@ SecurityEvent
 <br>
 <p align="center">
 <kbd><kbd><img src="screenshots/13-t1053-005-query-4698.png"></kbd></kbd><br>
-<em>Task creation events in Sentinel. The extra task names come from other Atomic tests I ran for this technique.</em>
+<em>Task creation events in Sentinel. The extra task names come from other Atomic tests I ran for this technique. SubjectUserName doesn’t appear because it was empty for 4698 in this workspace, and Log Analytics hides empty columns. I fixed this later with a parser function in sigma-detection-as-code.</em>
 </p>
 <br>
 
@@ -420,6 +420,8 @@ SecurityIncident
 | T1110.001 Password guessing | 2 |
 | T1547.001 Registry run key | 2 |
 
+The log clearing rule appears under its old name, T1070.001, for the same reason.
+
 <p align="center">
 <kbd><kbd><img src="screenshots/52-rules-fired-proof.png"></kbd></kbd><br>
 <em>All seven rules have made at least one incident.</em>
@@ -432,7 +434,7 @@ Some counts are much higher than the number of tests I ran. I explain why under 
 
 I mapped the results in ATT&CK Navigator, on ATT&CK v20. Green is detected, yellow is partial, red is missed and blue is fixed in this part. The layer files are in [`heatmaps/`](heatmaps), and hovering over a cell shows which log source it relies on.
 
-ATT&CK v19 split Defense Evasion into Stealth and Defense Impairment, which is why log clearing now sits under Defense Impairment as T1685.005. My Sentinel rule is still named T1070.001.
+ATT&CK v19 split Defense Evasion into Stealth and Defense Impairment, which is why log clearing now sits under Defense Impairment as T1685.005. My Sentinel rule kept its original name, T1070.001, because I deleted the lab before updating it.
 
 <p align="center">
 <kbd><kbd><img src="screenshots/50-heatmap-before.png"></kbd></kbd><br>
@@ -466,7 +468,6 @@ ATT&CK v19 split Defense Evasion into Stealth and Defense Impairment, which is w
 - The scheduled task rule fired again on 6 Nov, a day I didn't create any task. That is probably Windows creating its own tasks, which is the kind of false positive the rule would need tuning for.
 - A green cell on the heatmap means my test was detected. It doesn't mean every variant of that technique is covered, which part 2 showed with `Clear-EventLog`.
 - A few run screenshots are cut off or don't show the clock. Where that happens, the query timestamps back them up.
-- The lab stops working when my Azure credits run out on 16 Nov 2026, so the screenshots and queries are the record.
 
 ## What I actually learned from this
 
