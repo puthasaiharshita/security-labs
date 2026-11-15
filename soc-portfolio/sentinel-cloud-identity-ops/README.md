@@ -94,11 +94,11 @@ That changed how I wrote the detection. The rule can only say "a firewall rule w
 - Runs every 15 minutes and looks back 30, because Activity logs can arrive up to about 15 minutes late.
 - Maps Caller to Account, CallerIpAddress to IP and the resource ID to Azure resource.
 - Alert grouping is on (all entities match, 1 hour), because my earlier rules had been creating duplicate incidents.
-- Mapped to MITRE T1562.007 (Disable or Modify Cloud Firewall).
+- Mapped to MITRE ATT&CK T1686.001 (Disable or Modify System Firewall: Cloud Firewall), under Defense Impairment.
 
 <p align="center">
 <kbd><kbd><img src="screenshots/59-nsg-rule-analytics-config.png"></kbd></kbd><br>
-<em>The new rule enabled, listed under Defense Evasion with T1562.007.</em>
+<em>The new rule enabled. It shows my first mapping, T1562.007, which ATT&CK v19 replaced with T1686.001 under Defense Impairment.</em>
 </p>
 <br>
 
@@ -307,7 +307,6 @@ There's still a gap. An attacker running as SYSTEM who names their task under `\
 - The anomaly baseline is almost zero because the VM was off most of the time.
 - There's no real sign-in data, so impossible travel was only tested on made-up rows.
 - Screenshots 65 and 67 don't show the final Resolved status and classification; screenshot 68 does.
-- My Azure credits end on 16 Nov 2026, so after that the lab won't exist. The queries, notes and screenshots here are the record.
 
 ## What I actually learned from this
 
@@ -315,7 +314,7 @@ Building detections was the easy part again. The harder and more useful part was
 
 I also learned to find out what a log can't tell me before I write a rule on it, like the missing rule contents in Azure Activity. And I learned to test a new log source with a real event before trusting it, because a connector that says Connected doesn't mean the data is arriving.
 
-Next I want to export the two rules as JSON, add a check on the task's program path to close the masquerading gap, and record short demo videos while the workspace still exists.
+Next I want to add a check on the task’s program path to close the masquerading gap.
 
 ## Repo contents
 
@@ -332,6 +331,6 @@ sentinel-cloud-identity-ops/
 │   ├── 07-schtask-tuned-rule.kql
 │   └── 08-triage-pivot-4698.kql
 ├── triage/        (5 incident notes and a duplicates list)
-├── rules/         (rule exports, to be added)
+├── rules/         (Sentinel rule exports)
 └── screenshots/   (23 images)
 ```
