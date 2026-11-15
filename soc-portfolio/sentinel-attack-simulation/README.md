@@ -442,6 +442,17 @@ ATT&CK v19 split Defense Evasion into Stealth and Defense Impairment, which is w
 </p>
 <br>
 
+| Technique | Before | After |
+|---|---|---|
+| T1136.001 Local Account | Detected | Detected |
+| T1053.005 Scheduled Task | Detected | Detected |
+| T1547.001 Registry Run Keys | Detected | Detected |
+| T1685.005 Clear Windows Event Logs | Partial | Fixed |
+| T1087.001 Local Account Discovery | Detected | Detected |
+| T1059.003 Windows Command Shell | Detected | Detected |
+| T1110.001 Password Guessing | Missed | Fixed |
+<br>
+
 <p align="center">
 <kbd><kbd><img src="screenshots/51-heatmap-after.png"></kbd></kbd><br>
 <em>After: both gaps fixed and re-tested.</em>
