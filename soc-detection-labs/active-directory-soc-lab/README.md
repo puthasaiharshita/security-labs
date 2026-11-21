@@ -52,4 +52,4 @@ One 4625 on its own usually means nothing - someone just fat-fingered their pass
 
 ### What's next
 
-Now that I know where these events land, my next step is to forward the logs into Splunk and build a detection for repeated failed logons across this lab. I'll link that investigation here once it's done.
+Now that I know where these events land, my next step is to forward the logs into Splunk and build a detection for repeated failed logons across this lab. That investigation is here: [Detecting Repeated Failed Logons with Splunk](../../soc-portfolio/splunk-bruteforce-detection/README.md).
