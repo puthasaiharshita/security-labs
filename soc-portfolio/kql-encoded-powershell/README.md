@@ -9,7 +9,7 @@ Getting the logs into Sentinel took more work than the hunt itself, so this writ
 | Role | Name | Details |
 |---|---|---|
 | Target machine | Client01 | Windows 11 VM, hostname `DESKTOP-0U2KVQR.corp.local`, joined to my `corp.local` lab domain |
-| SIEM | Microsoft Sentinel | Workspace `law-sentinel-lab`, East Asia, on the 31-day free trial |
+| SIEM | Microsoft Sentinel | Workspace `law-sentinel-lab`, East Asia |
 | Log collection | Azure Arc + Azure Monitor Agent | Connector: Windows Security Events via AMA (Common events) |
 | Data collection rule | `dcr-client01-security` | Attached to Client01 |
 | Table / Event ID | `SecurityEvent` / 4688 | Process creation, with command line logging turned on |
@@ -200,7 +200,6 @@ This was a simulated attack that I ran myself, and the detection logic found it 
 - Command line logging was turned on locally with `auditpol` and a registry value, because DC01 was off and Group Policy couldn't be updated.
 - I only remember running the command once, but Sentinel recorded two matching events 16 minutes apart. I didn't investigate why, so I'm reporting what the logs show and not guessing.
 - I created and enabled the analytics rule but did not confirm that it triggered an alert.
-- The lab resources have since been removed, so the queries can't be re-run from this repo. The screenshots are the record.
 
 ## What I actually learned from this
 
