@@ -23,6 +23,7 @@ I'm looking for an entry-level SOC analyst role. I build these skills in a home 
 - [Detection-as-Code with Sigma (Sentinel + Splunk)](soc-portfolio/sigma-detection-as-code/README.md)
 - [Triaging Sentinel Incidents and Tuning a Noisy Rule (Azure Activity and Entra ID)](soc-portfolio/sentinel-cloud-identity-ops/README.md)
 - [Detecting Repeated Failed Logons with Splunk (T1110.001)](soc-portfolio/splunk-bruteforce-detection/README.md)
+- [Phishing Campaign Linker: Grouping Reported Phishing Emails into Campaigns](https://github.com/puthasaiharshita/phishing-campaign-linker) (separate repo)
 
 ### Earlier labs
 - [Built My First Active Directory SOC Lab](soc-detection-labs/active-directory-soc-lab/README.md)
