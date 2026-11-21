@@ -9,7 +9,7 @@ Most of the work was setup, so this write-up is mostly about how the data got th
 | Role | Name | Details |
 |---|---|---|
 | Target machine | `vm-win-lab` | Windows Server 2025 Datacenter, Azure VM, size B2als_v2, Central India |
-| SIEM | Microsoft Sentinel | Workspace `law-soc-lab`, Central India, on the 31-day free trial |
+| SIEM | Microsoft Sentinel | Workspace `law-soc-lab`, Central India |
 | Log collection | Azure Monitor Agent | Connector: Windows Security Events via AMA (All Security Events) |
 | Data collection rule | `dcr-windows-security` | Attached to `vm-win-lab` |
 | Table / Event ID | `SecurityEvent` / 4625 | Failed logon |
@@ -149,7 +149,6 @@ When I finished, I stopped the VM from the Azure portal and waited until it said
 - There is no analytics rule and no incident, so this is ingestion and querying, not a working detection.
 - I wanted to add Sysmon too, but I got confused about which machine I was working on and ran out of time. It's left for the next part.
 - Some of the screenshots (03, 05 and 10) have a cut-off column, so they show less than I meant them to.
-- My Azure free credits expire on 16 Nov 2026, so after that date the lab won't exist. The screenshots and queries are the record.
 
 ## What I actually learned from this
 
