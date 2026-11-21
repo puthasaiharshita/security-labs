@@ -1,10 +1,8 @@
-# Project 4: Detection-as-Code with Sigma (Sentinel + Splunk)
+# Detection-as-Code with Sigma (Sentinel + Splunk)
 
 ![Sigma detection CI](https://github.com/puthasaiharshita/security-labs/actions/workflows/sigma-ci.yml/badge.svg)
 
-I rewrote my Project 3 Sentinel detections as vendor-neutral Sigma rules and converted them to KQL for Microsoft Sentinel and SPL for Splunk. I tested every KQL query against real attack logs from my lab. A GitHub Actions workflow validates and converts every rule on each push.
-
-The rewrite exposed blind spots, duplicate alerts and false positives in my original rules. The numbers for each are in the test results section.
+I wrote six Windows detections as vendor-neutral Sigma rules, converted them to KQL for Microsoft Sentinel and SPL for Splunk, and tested every KQL query against real attack logs from my lab. A GitHub Actions workflow validates and converts every rule on each push.
 
 ## Architecture
 
@@ -32,14 +30,14 @@ In my workspace, Sysmon lands in the generic `Event` table. Some `SecurityEvent`
 | 5 | Local account discovery | T1087.001, Discovery | Sysmon 1 | low |
 | 6 | Batch script via cmd.exe | T1059.003, Execution | Sysmon 1 | low |
 
-`sigma check` flagged my original tags (`attack.defense-evasion`, `attack.t1070.001`) because ATT&CK v19 revoked them. The rules use the current IDs.
+The rules use current ATT&CK IDs. `sigma check` rejects `attack.defense-evasion` and `attack.t1070.001` because ATT&CK v19 revoked them.
 
 ## Test results (14 days of lab data, 1 Windows VM)
 
 | Rule | Before tuning | After tuning | What changed |
 |---|---|---|---|
-| 1 Log cleared | 2 | 2 | Matches my Day 3 fixed rule |
-| 2 Account created | 2 | 2 | Same as Project 3 |
+| 1 Log cleared | 2 | 2 | No change |
+| 2 Account created | 2 | 2 | No change |
 | 3 Scheduled task | 18 | 12 | Removed 6 false positives: Windows Defender Scheduled Scan created by SYSTEM (`S-1-5-18`) |
 | 4 Run key | 9 | 3 | Removed 4 EventID 12 clean-up events and 2 Windows `ctfmon.exe /n` RunOnce writes by `userinit.exe` |
 | 5 Account discovery | 44 | 24 | Removed 20 duplicate `net1.exe` events spawned by `net.exe` |
@@ -47,7 +45,7 @@ In my workspace, Sysmon lands in the generic `Event` table. Some `SecurityEvent`
 
 Each filter matches both the program or parent process and the specific value. An attacker who copies a benign name from a different account or process still triggers the rule.
 
-## Problems I found in my Project 3 rules
+## What testing found in my earlier KQL rules
 
 - The account discovery rule missed 8 real commands. It searched the event text for "net user", but Windows logs commands launched from PowerShell as `"C:\Windows\system32\net.exe" user`. The Sigma rule matches the program and its arguments as separate fields and catches all 8. It also covers `net1.exe` and the PowerShell cmdlet `Get-LocalUser`.
 - The Run key rule missed RunOnce. KQL `has` matches whole terms, so `has "CurrentVersion\\Run"` didn't match `RunOnce`. The Sigma rule uses `contains`.
