@@ -1,4 +1,4 @@
-# Watching the Azure Control Plane and Entra ID in Sentinel, Then Triaging What Fired
+# Triaging Sentinel Incidents and Tuning a Noisy Rule (Azure Activity and Entra ID)
 
 My earlier Sentinel labs only looked at what happened inside the Windows VM. This time I wanted to see the layer above it: who changes things in Azure itself, and what Entra ID records about users. Then I wanted to do the part of the job I hadn't really practised yet, which is opening the incidents my rules had been creating for a week and deciding what each one actually was.
 
