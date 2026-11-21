@@ -11,7 +11,7 @@ In [part 2](#part-2-testing-the-rules-and-fixing-the-gaps) I went back and tried
 | Role | Name | Details |
 |---|---|---|
 | Target machine | `vm-win-lab` | Windows Server 2025, Azure VM, Central India |
-| SIEM | Microsoft Sentinel | Workspace `law-soc-lab`, on the 31-day free trial |
+| SIEM | Microsoft Sentinel | Workspace `law-soc-lab`|
 | Log collection | Azure Monitor Agent | Two data collection rules: `dcr-windows-security` for the Security log and `dcr-windows-sysmon` for the Sysmon log |
 | Endpoint logging | Sysmon | Community config, plus process creation auditing and command line logging |
 | Attack simulation | Atomic Red Team | Run from PowerShell on the VM |
