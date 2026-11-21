@@ -1,6 +1,6 @@
 # Detecting Repeated Failed Logons with Splunk
 
-After I got my Active Directory lab working, I wanted to go one step further and actually detect an attack in it, not just read about it. So I installed Splunk on Client01, attacked it from DC01, and tried to find the activity in the logs the way a SOC analyst would.
+After I got my [Active Directory lab](../../soc-detection-labs/active-directory-soc-lab/README.md) working, I wanted to go one step further and actually detect an attack in it, not just read about it. So I installed Splunk on Client01, attacked it from DC01, and tried to find the activity in the logs the way a SOC analyst would.
 
 This ended up being a lot more hands-on than I expected. Half of this write-up is the actual investigation, and the other half is everything that broke along the way, which honestly taught me more than if it had worked on the first try.
 
