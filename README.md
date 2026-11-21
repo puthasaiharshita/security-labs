@@ -37,7 +37,6 @@ I'm looking for an entry-level SOC analyst role. I build these skills in a home 
 
 - Network investigation: a malware-infection PCAP in Wireshark, compared with Suricata and Zeek, written up as an incident report
 - AI-assisted triage: how often an LLM gets alert verdicts right on alerts I've labelled, and whether prompt injection can fool it
-- Phishing analysis: three emails investigated from headers to verdict
 
 ## Structure
 
