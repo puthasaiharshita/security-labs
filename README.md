@@ -31,7 +31,6 @@ I'm looking for an entry-level SOC analyst role. I build these skills in a home 
 
 ### Python tools
 - [IOC Enrichment Tool: VirusTotal and AbuseIPDB Lookups](https://github.com/puthasaiharshita/ioc-enrichment-tool) (separate repo)
-- [Python Auth Log Parser: Failed Login Detection with Regex](soc-portfolio/python-log-parser/README.md)
 
 ## What I'm working on next
 
