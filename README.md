@@ -23,7 +23,6 @@ I'm looking for an entry-level Information Security Analyst role. I build these 
 - [Detection-as-Code with Sigma (Sentinel + Splunk)](soc-portfolio/sigma-detection-as-code/README.md)
 - [Triaging Sentinel Incidents and Tuning a Noisy Rule (Azure Activity and Entra ID)](soc-portfolio/sentinel-cloud-identity-ops/README.md)
 - [Detecting Repeated Failed Logons with Splunk (T1110.001)](soc-portfolio/splunk-bruteforce-detection/README.md)
-- [Phishing Campaign Linker: Grouping Reported Phishing Emails into Campaigns](https://github.com/puthasaiharshita/phishing-campaign-linker) (separate repo)
 
 ### Earlier labs
 - [Built My First Active Directory SOC Lab](soc-detection-labs/active-directory-soc-lab/README.md)
@@ -31,12 +30,18 @@ I'm looking for an entry-level Information Security Analyst role. I build these 
 - [Getting Windows Logs into Microsoft Sentinel and Finding Failed Logons (KQL)](soc-portfolio/sentinel-windows-security-lab/README.md)
 
 ### Python tools
+### Python tools
 - [IOC Enrichment Tool: VirusTotal and AbuseIPDB Lookups](https://github.com/puthasaiharshita/ioc-enrichment-tool) (separate repo)
+- [Auth Log Parser: Finding Brute-Force Sources in Linux SSH Logs](soc-portfolio/python-log-parser/README.md)
 
 ## What I'm working on next
 
-- Network investigation: a malware-infection PCAP in Wireshark, compared with Suricata and Zeek, written up as an incident report
-- AI-assisted triage: how often an LLM gets alert verdicts right on alerts I've labelled, and whether prompt injection can fool it
+## What I'm working on next
+
+- Phishing triage: parsing reported emails, enriching indicators and comparing rule-based and AI verdicts against my own labels
+- Vulnerability management: scanning my lab, prioritising findings with CVSS, EPSS and CISA KEV, and tracking fixes
+- Incident response: a full investigation with a timeline, incident report and new detections
+- Small-company security review: access review, cloud posture and ISO 27001 / NIST CSF evidence
 
 ## Structure
 
