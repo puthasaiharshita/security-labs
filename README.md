@@ -1,10 +1,10 @@
 # Security Portfolio: Putha Sai Harshita
-Entry-level SOC Analyst | Hands-on blue-team labs in Active Directory, Windows event logging, Sigma, Splunk and Microsoft Sentinel
+Information Security Analyst | Hands-on blue-team labs in Active Directory, Windows event logging, Sigma, Splunk and Microsoft Sentinel
 [LinkedIn](https://www.linkedin.com/in/harshita-sai-putha)
 
 ## About
 
-I'm looking for an entry-level SOC analyst role. I build these skills in a home lab: I set up an Active Directory domain, collect Windows event logs, simulate attacks against my own machines, write detections for them in Splunk and Microsoft Sentinel, and triage the incidents those detections raise. Along the way I've also worked with Azure monitoring (Arc, Azure Monitor Agent, Sentinel) and written small Python tools. Each write-up covers what broke as well as what worked, and what the results can't prove.
+I'm looking for an entry-level Information Security Analyst role. I build these skills in a home lab: I set up an Active Directory domain, collect Windows event logs, simulate attacks against my own machines, write detections for them in Splunk and Microsoft Sentinel, and triage the incidents those detections raise. Along the way I've also worked with Azure monitoring (Arc, Azure Monitor Agent, Sentinel) and written small Python tools. Each write-up covers what broke as well as what worked, and what the results can't prove. I build these skills in a home lab: I set up an Active Directory domain, collect Windows event logs, simulate attacks against my own machines, write detections for them in Splunk and Microsoft Sentinel, and triage the incidents those detections raise. Along the way I've also worked with Azure monitoring (Arc, Azure Monitor Agent, Sentinel) and written small Python tools. Each write-up covers what broke as well as what worked, and what the results can't prove.
 
 ## Skills
 
